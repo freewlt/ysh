@@ -20,6 +20,7 @@ app.use('/', (req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*');
   next();
 })
+app.use(express.static('../dist'))
 
 app.post('/resource/save', (req, res) => {
   console.log(res);
