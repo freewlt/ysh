@@ -31,12 +31,12 @@
             <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
           </template>
           <el-table-column label="代理名称" class="daiLi">
-            <template slot-scope="scope">
+            <template slot-scope="">
               <a class="buttonText" @click="look = true">查看详情</a>
             </template>
           </el-table-column>
           <el-table-column label="操作">
-            <template slot-scope="scope">
+            <template slot-scope="">
               <i class="handleBtn el-icon-edit"></i>
               <i class="handleBtn el-icon-share"></i>
               <!--<el-button class="handleBtn" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
@@ -249,7 +249,7 @@ export default {
       }
     },
     // 懒加载
-    loadOptions ({ action, parentNode, callback }) {
+    loadOptions ({ parentNode, callback }) {
       let params = {
         id: parentNode.id
       }

@@ -36,17 +36,19 @@
 
 <script>
 
-import {fetchMenu, updateResource, saveResource, editMenu} from '@/utils/api/menu'
+import {fetchMenu, saveResource, editMenu} from '@/utils/api/menu'
 import {getStore} from '@/utils/localStorage'
+import { formdata } from '@/utils/tool'
 
-import TreeSelectMut from '@/components/treeSelect/treeSelectMut'
+// import TreeSelectMut from '@/components/treeSelect/treeSelectMut'
 // import TreeSelectSingle from '@/components/treeSelect/treeSelectSingle'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
+        
 export default {
   name: 'resourceAdd',
-  components: { Treeselect, TreeSelectMut },
+  components: { Treeselect },
   props: ['dialogTableTitle'],
   data () {
     return {
@@ -71,6 +73,7 @@ export default {
       isDisabled: false
     }
   },
+  
   created () {
     this.getData()
   },
@@ -122,7 +125,7 @@ export default {
       }
     },
     // 懒加载
-    loadOptions ({ action, parentNode, callback }) {
+    loadOptions ({ parentNode, callback }) {
       let params = {
         id: parentNode.id
       }
@@ -140,21 +143,9 @@ export default {
 //    },
     submitForm (formName) {
       const _this = this
-      // 表单数据
-      let formData = new FormData()
-      formData.append('name', this.ruleForm.name)
-      formData.append('parentId', this.ruleForm.menu)
-      formData.append('sort', this.ruleForm.sort)
-      formData.append('url', this.ruleForm.url)
-//      let i = formData.entries()
-//      console.log(i.next())
-//      console.log(i.next())
-//      console.log(i.next())
-//      console.log(i.next())
-//      return;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          saveResource(formData).then((res) => {
+          saveResource(formdata(this.ruleForm)).then((res) => {
 //            const timer = setInterval(() => {
 //              this.isDisabled = !this.isDisabled
 //            }, 100)

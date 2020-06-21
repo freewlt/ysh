@@ -28,8 +28,7 @@
       </div>
     </div>
     <!--弹窗资源新建-->
-    <resource-add v-if="dialogVisible" :dialogTableTitle="dialogTableTitle"></resource-add>
-
+    <resource-add :dialogTableTitle="dialogTableTitle"></resource-add>
   </div>
 </template>
 
@@ -37,13 +36,13 @@
 import {fetchMenu, getResource, deleteTreeData} from '@/utils/api/menu'
 import {setStore} from '@/utils/localStorage'
 
-import ResourceTable from '@/components/resource/tableLoad'
+// import ResourceTable from '@/components/resource/tableLoad'
 import BreadCrumbBox from '@/components/common/breadCrumb/breadCrumb'
 import resourceAdd from './add'
 
 export default {
   name: 'resource',
-  components: {resourceAdd, ResourceTable, BreadCrumbBox},
+  components: {resourceAdd, BreadCrumbBox},
   data () {
     return {
       breadList: [
@@ -66,6 +65,7 @@ export default {
   methods: {
     // 显示对话框
     dialogTable (e) {
+      console.log('显示对话框');
       this.dialogVisible = true
       this.dialogTableTitle = e
     },
@@ -87,7 +87,7 @@ export default {
     },
     // 删除
     deleteBtn (index, row) {
-      deleteTreeData(row.id).then((res) => {
+      deleteTreeData(row.id).then(() => {
         this.$router.go(0)
       }).catch((err) => {
         console.log(err)

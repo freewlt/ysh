@@ -11,7 +11,7 @@
         <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
       </template>
       <el-table-column label="操作">
-        <template slot-scope="scope">
+        <template slot-scope="">
           <i class="handleBtn el-icon-edit"></i>
           <i class="handleBtn el-icon-delete"></i>
         </template>
