@@ -12,5 +12,15 @@ module.exports = {
                 pathRewrite: {'^/api' : ''},
             }
         }
-    }    
+    },
+    pages: {//配置多页面入口        
+        index: {          
+          entry: 'src/main.js',          
+          template: 'public/index.html',        
+        },        
+        admin: {          
+          entry: 'src/admin.js',          
+          template: 'public/admin.html',        
+        },    
+    }   
 }

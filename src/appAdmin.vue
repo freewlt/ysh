@@ -1,5 +1,5 @@
 <template>
-  <div id="Admin">
+  <div id="App">
     Admin
     <router-view/>
   </div>
@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'Admin'
+  name: 'App'
 }
 </script>
 
