@@ -1,16 +1,17 @@
 <template>
-  <div id="app">
+  <div id="Admin">
+    Admin
     <router-view/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'Admin'
 }
 </script>
 
-<style lang="less">
+<style>
   /*@import "./assets/css/normalize.css";*/
   @import "./assets/css/common.css";
   html,body,#app {
