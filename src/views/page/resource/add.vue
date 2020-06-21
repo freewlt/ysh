@@ -1,5 +1,4 @@
 <template>
-  <!--<div class="resourceAdd">-->
   <el-dialog class="resourceAdd" :title="dialogTableTitle" :visible.sync="dialogTableVisible">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
       <el-form-item label="名称" prop="name">
@@ -31,12 +30,11 @@
       </el-form-item>
     </el-form>
     </el-dialog>
-  <!--</div>-->
 </template>
 
 <script>
 
-import {fetchMenu, saveResource, editMenu} from '@/utils/api/menu'
+import {fetchMenu, saveResource, editMenu} from '@/api/menu'
 import {getStore} from '@/utils/localStorage'
 import { formdata } from '@/utils/tool'
 
@@ -44,6 +42,7 @@ import { formdata } from '@/utils/tool'
 // import TreeSelectSingle from '@/components/treeSelect/treeSelectSingle'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+
 
         
 export default {
@@ -69,7 +68,7 @@ export default {
         ]
       },
       treeSelData: [],
-      dialogTableVisible: true,
+      dialogTableVisible: false,
       isDisabled: false
     }
   },
@@ -145,23 +144,30 @@ export default {
       const _this = this
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          saveResource(formdata(this.ruleForm)).then((res) => {
-//            const timer = setInterval(() => {
-//              this.isDisabled = !this.isDisabled
-//            }, 100)
-            if (res.result === 'SUCCESS') {
-              this.$refs[formName].resetFields()
-              _this.ruleForm.menu = null
-              _this.ruleForm.url = ''
-//              clearInterval(timer)
-              this.dialogTableVisible = false
-              _this.$message({
-                message: res.message,
+          saveResource(formdata(this.ruleForm), 
+          (isShow) => {
+            if (isShow) {
+              _this.isDisabled = true;
+              this.$emit('').$parent.isShow = true
+            } else {
+              _this.isDisabled = false;
+              this.$emit('').$parent.isShow = false
+            }
+          }
+          ).then((res) => {
+            this.$refs[formName].resetFields()
+            _this.ruleForm.menu = null
+            _this.ruleForm.url = ''
+            this.dialogTableVisible = false
+            _this.$message({
+              message: res.message,
+              type: 'success'
+            })
+          }).catch((err) => {
+            _this.$message({
+                message: err,
                 type: 'success'
               })
-              this.$router.go(0)
-            }
-          }).catch((err) => {
             console.log(err)
           })
         } else {

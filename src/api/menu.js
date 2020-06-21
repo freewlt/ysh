@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2020/6/20.
  */
-import { get, post } from '@/utils/http'
+import { get, post } from './index';
 // import store from '@/utils/store'
 // //import * as types from '@/utils/store/types'
 //

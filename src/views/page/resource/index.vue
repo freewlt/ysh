@@ -1,5 +1,5 @@
 <template>
-  <div class="resource">
+  <div class="resource" ref="resource">
     <!--面包屑导航-->
     <bread-crumb-box :breadList="breadList"></bread-crumb-box>
     <!--主要内容-->
@@ -28,21 +28,24 @@
       </div>
     </div>
     <!--弹窗资源新建-->
-    <resource-add :dialogTableTitle="dialogTableTitle"></resource-add>
+    <resource-add ref="elDialog" :dialogTableTitle="dialogTableTitle"></resource-add>
+    <!-- loading -->
+    <shade-box v-if="isShow"></shade-box>
   </div>
 </template>
 
 <script>
-import {fetchMenu, getResource, deleteTreeData} from '@/utils/api/menu'
+import {fetchMenu, getResource, deleteTreeData} from '@/api/menu'
 import {setStore} from '@/utils/localStorage'
 
 // import ResourceTable from '@/components/resource/tableLoad'
 import BreadCrumbBox from '@/components/common/breadCrumb/breadCrumb'
 import resourceAdd from './add'
+import ShadeBox from '@/components/common/loading/shadeBox'
 
 export default {
   name: 'resource',
-  components: {resourceAdd, BreadCrumbBox},
+  components: {ShadeBox, resourceAdd, BreadCrumbBox},
   data () {
     return {
       breadList: [
@@ -56,7 +59,8 @@ export default {
       ],
       treeSelData: [],
       dialogVisible: false,
-      dialogTableTitle: ''
+      dialogTableTitle: '',
+      isShow: false
     }
   },
   created () {
@@ -64,16 +68,15 @@ export default {
   },
   methods: {
     // 显示对话框
-    dialogTable (e) {
-      console.log('显示对话框');
-      this.dialogVisible = true
+    dialogTable (e) { 
+      this.$refs.elDialog.dialogTableVisible  = true
       this.dialogTableTitle = e
     },
     // 编辑
     editBtn (index, row, title) {
       //      const _this = this
       console.log(row)
-      this.dialogVisible = true
+      this.$refs.elDialog.dialogTableVisible  = true
       this.dialogTableTitle = title
       getResource(row.id, true).then((res) => {
         const editData = res.data
@@ -121,6 +124,7 @@ export default {
 
 <style lang="less" scoped>
   .resource {
+    position: relative;
     width: 100%;
     height: 100%;
     overflow-y: auto;

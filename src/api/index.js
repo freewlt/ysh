@@ -7,8 +7,8 @@ import router from '@/router'
 
 import { Loading, Message } from 'element-ui'
 
-// const locationURl = 'http://192.168.0.114:7000/api-base'
-const locationURl = 'http:www.baidu.com'
+ 
+const locationURl = '/api';
 const config = {
   baseURL: process.env.NODE_ENV === 'production' ? process.env.BASE_API : locationURl,
   timeout: 1000
@@ -55,7 +55,7 @@ export function tryHideFullScreenLoading () {
 // request拦截器
 service.interceptors.request.use(
   config => {
-    // showFullScreenLoading()
+    // startLoading()
     const isToken = (config.headers || {}).isToken === false
     let token = store.getters.access_token
     if (token && !isToken) {
@@ -71,7 +71,7 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   res => {
-    // tryHideFullScreenLoading()
+    // endLoading ()
     if (res.status === 401) {
       store.dispatch('FedLogOut').then(() => {
         router.push({path: '/login'})
@@ -89,7 +89,7 @@ service.interceptors.response.use(
     return res
   },
   err => {
-    // tryHideFullScreenLoading()
+    // endLoading ()
     return Promise.reject(err)
   }
 )
@@ -97,12 +97,15 @@ service.interceptors.response.use(
 const wLoading = (callback, showLoading) => {
   return new Promise((resolve, reject) => {
     showLoading(true)
+    // startLoading()
     callback().then(response => {
       showLoading(false)
+      // endLoading()
       resolve(response.data)
     },
     err => {
       showLoading(false)
+      // endLoading()
       reject(err)
     }
     )
