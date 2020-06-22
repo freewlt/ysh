@@ -93,7 +93,8 @@ service.interceptors.response.use(
   }
 )
 
-const wLoading = (callback, showLoading) => {
+const wLoading = (callback, loading) => {
+  const showLoading = loading || (() => {});
   return new Promise((resolve, reject) => {
     showLoading(true)
     // startLoading()
@@ -115,20 +116,14 @@ const get = (url, params = {}, {showLoading} = { showLoading: () => {} }) => {
   return wLoading(() => service.get(url, { params, showLoading }), showLoading)
 }
 
-const post = (url, data, {showLoading} = { showLoading: () => {} }) => {
-  return wLoading(() => service.post(url, data, { showLoading }), showLoading)
-}
-// const post = (url, data, {showLoading} = { showLoading: () => {} }) => {
-//   return wLoading(() => service.post(url, {data, showLoading}), showLoading)
-// }
-
-const patch = (url, data, showLoading = () => {}) => {
-  return wLoading(() => service.patch(url, data, { showLoading }), showLoading)
+const post = (url, data, config = {}) => {
+  return wLoading(() => service.post(url, data, config), config.showLoading)
 }
 
-const put = (url, data, {showLoading} = () => {}) => {
-  return wLoading(() => service.put(url, data, { showLoading }), showLoading)
+const put = (url, data, config = {}) => {
+  return wLoading(() => service.put(url, data, config), config.showLoading)
 }
 
-export { get, post, patch, put }
+export { get, post, put }
+
 export default service

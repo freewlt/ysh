@@ -7,8 +7,8 @@ export function fetchResource (params = {}, showLoading = () => {}) {
   return get('/resource/tree', params, { showLoading })
 }
 
-export function saveResource (data, showLoading = () => {}) {
-    return post('/resource/save', data, { showLoading })
+export function saveResource (data, showLoading) {
+    return post('/resource/save', data, { showLoading, headers: { 'content-type': 'application/x-www-form-urlencoded' } })
 }
 
 export function getResource (id, showLoading = () => {}) {

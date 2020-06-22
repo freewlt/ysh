@@ -24,7 +24,7 @@ app.use(express.static('../dist'))
 
 app.post('/resource/save', (req, res) => {
   console.log(res);
-  res.send("ok");
+  res.send({ a: 1, b:2 });
 });
 
 app.listen(7000, function () {

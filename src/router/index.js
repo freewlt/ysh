@@ -1,17 +1,18 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const welcome = () => import('@/views/welcome.vue')
+const Welcome = () => import('@/views/welcome.vue')
 const Home = () => import('@/views/home/home')
 const User = () => import('@/views/page/user/index')
 const Resource = () => import('@/views/page/resource/index')
+const Order = () => import('@/views/order/index')
 
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    component: Home
+  { 
+    path: '/', 
+    redirect: '/home', 
   },
   {
     path: '/home',
@@ -19,17 +20,17 @@ const routes = [
     component: Home,
     children: [
       {
-        path: '/',
-        component: welcome
+        path: '',
+        component: Welcome,
       },
       {
-        path: '/home/resource',
+        path: 'resource',
         name: "资源管理",
         component: Resource,
         meta: { title: '资源管理' }
       },
       {
-        path: '/home/user',
+        path: 'user',
         name: "用户管理",
         component: User,
         meta: { title: '用户管理' }
@@ -39,14 +40,14 @@ const routes = [
   {
       path: '/order',
       name: "订单",
-      component: Home,
+      component: Order,
       children: [
           {
-              path: '/',
-              component: welcome
+              path: '',
+              component: Welcome
           },
           {
-              path: '/home/user',
+              path: 'user',
               component: User,
               meta: { title: '用户管理' }
           }

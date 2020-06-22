@@ -29,7 +29,8 @@
 <script>
 
     import {asyncResource, saveResource} from '@/api/resource'
-    import { formdata } from '@/utils/tool'
+    // import { formdata } from '@/utils/tool'
+    import qs from 'qs';
 
     import Treeselect from '@riophae/vue-treeselect'
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -119,7 +120,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         console.log(this.ruleForm.parentId===null);
-                        saveResource(formdata(this.ruleForm),
+                        saveResource(qs.stringify(this.ruleForm),
                             (isShow) => {
                                 if (isShow) {
                                     _this.isDisabled = true;
