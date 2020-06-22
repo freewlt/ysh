@@ -40,6 +40,7 @@
         data () {
             return {
                 ruleForm: {
+                    id: '',
                     name: '',
                     parentId: null,
                     sort: '',
@@ -80,8 +81,11 @@
             },
             editBtn (id,title) {
                 this.dialogTableTitle = title
+                this.ruleForm.id = id;
                 getResource(id).then((res) => {
-                    this.ruleForm =res.data
+                    for(let key in this.ruleForm){
+                        this.ruleForm[key] = res.data[key];
+                    }
                     if(this.ruleForm.parentId == ''){
                         this.ruleForm.parentId = null
                     }
@@ -132,11 +136,11 @@
                             _this.ruleForm.menu = null
                             _this.ruleForm.url = ''
                             this.dialogEditVisible = false
-                            console.log(res)
                             _this.$message({
                                 message: res.message,
                                 type: 'success'
                             })
+                            this.$router.go(0)
                         })
                     } else {
                         console.log('error submit!!')

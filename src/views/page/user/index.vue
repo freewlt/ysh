@@ -1,7 +1,5 @@
 <template>
   <div class="user">
-    <!--面包屑导航-->
-    <bread-crumb-box :breadList="breadList"></bread-crumb-box>
     <!--搜索条件-->
     <div class="searchCriteria">
       <div class="left">
@@ -70,12 +68,11 @@ import {fetchResource} from '@/api/resource'
 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import BreadCrumbBox from '@/components/common/breadCrumb/breadCrumb'
 import UserAdd from './add'
 
 export default {
   name: 'user',
-  components: { Treeselect, UserAdd, BreadCrumbBox },
+  components: { Treeselect, UserAdd },
   data () {
     return {
       breadList: [],
@@ -223,14 +220,9 @@ export default {
     })
 
     this.getData()
-    this.breadNav()
   },
   methods: {
 
-    // 面包屑导航获取
-    breadNav () {
-        this.breadList = this.$route.matched
-    },
     // 获取数据
     getData () {
       const _this = this
@@ -284,6 +276,9 @@ export default {
     height: 100%;
     overflow-y: auto;
     .content{
+      max-height: calc(100% - 128px);
+      min-height: calc(100% - 92px);
+      margin-top:10px;
       .dataTable{
         .handleBtn{
           display: inline-block;

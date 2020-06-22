@@ -117,6 +117,7 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
+                        console.log(this.ruleForm.parentId===null);
                         saveResource(formdata(this.ruleForm),
                             (isShow) => {
                                 if (isShow) {
@@ -131,11 +132,12 @@
                             this.$refs[formName].resetFields()
                             _this.ruleForm.menu = null
                             _this.ruleForm.url = ''
-                            this.dialogTableVisible = false
+                            this.dialogAddVisible = false
                             _this.$message({
                                 message: res.message,
                                 type: 'success'
                             })
+                            this.$router.go(0)
                         })
                     }
                 })

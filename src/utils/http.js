@@ -3,6 +3,7 @@
  */
 import axios from 'axios'
 import store from '@/utils/store'
+import router from '@/router'
 
 import { Loading, Message } from 'element-ui'
 
@@ -71,21 +72,20 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   res => {
     // endLoading ()
-    // if (res.status === 401) {
-    //   return
-    // }
-    //   console.log(res)
+    if (res.status === 401) {
+        router.push({path: '/login'})
+    }
+    let tipMessage = res.data.message + `[${res.data.errorMsg}]`
     if (res.status !== 200 || res.data.result !== 'SUCCESS') {
-        Message({
-            message: res.data.message,
-            type: 'error'
-        });
+       Message({
+        message: tipMessage,
+        type: 'error'
+      });
       return Promise.reject(new Error(res.data.message))
     }
     if (res.status == 200 || res.data.result === 'SUCCESS') {
-        return res
+          return res
     }
-    // return res
   },
   err => {
     // endLoading ()

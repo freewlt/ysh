@@ -1,7 +1,5 @@
 <template>
   <div class="resource" ref="resource">
-    <!--面包屑导航-->
-    <bread-crumb-box :breadList="breadList"></bread-crumb-box>
     <!--主要内容-->
     <div class="content">
       <div class="btnCondition">
@@ -39,14 +37,13 @@
 <script>
 import {fetchResource, deleteResource} from '@/api/resource'
 
-import BreadCrumbBox from '@/components/common/breadCrumb/breadCrumb'
 import ShadeBox from '@/components/common/loading/shadeBox'
 import ResourceDialogAdd from "./add";
 import ResourceDialogEdit from "./edit";
 
 export default {
   name: 'resource',
-  components: {ResourceDialogEdit, ResourceDialogAdd, ShadeBox, BreadCrumbBox},
+  components: {ResourceDialogEdit, ResourceDialogAdd, ShadeBox},
   data () {
     return {
       breadList: [],
@@ -63,13 +60,8 @@ export default {
   },
   created () {
     this.treeSelLoad()
-    this.breadNav()
   },
   methods: {
-    // 面包屑导航获取
-    breadNav () {
-      this.breadList = this.$route.matched
-    },
     // 添加对话框
     dialogTableAdd(e) {
       this.$refs.elDialogAdd.dialogAddVisible  = true
@@ -82,11 +74,26 @@ export default {
     },
     // 删除
     deleteBtn (index, row) {
-      deleteResource(row.id).then(() => {
-        this.$router.go(0)
-      }).catch((err) => {
-        console.log(err)
-      })
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            deleteResource(row.id).then(() => {
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+                this.$router.go(0)
+            }).catch((err) => {
+                console.log(err)
+            })
+        }).catch(() => {
+            this.$message({
+                type: 'info',
+                message: '已取消删除'
+            });
+        });
     },
     load (tree, treeNode, resolve) {
       let params = {
@@ -120,7 +127,7 @@ export default {
     overflow-y: auto;
     /*min-width: 1100px;*/
     .content{
-      min-height: calc(100% - 65px);
+      height: 100%;
       .handleBtn{
         font-size: 14px;
         font-style: normal;

@@ -81,7 +81,6 @@ img {
   align-content: space-between;
   justify-content: space-between;
   padding: 24px 20px;
-  margin-top: 10px;
   background: #fff;
   box-sizing: border-box;
 }
@@ -90,12 +89,11 @@ img {
   display: inline-block;
   vertical-align: middle;
   width: auto;
+  margin-right: 5px;
 }
 /*主要内容*/
 .content {
   width: 100%;
-  min-height: calc(100% - 155px);
-  margin-top: 10px;
   padding: 16px 20px;
   background: #fff;
   box-sizing: border-box;

@@ -25,26 +25,30 @@ const routes = [
       {
         path: '/home/resource',
         name: "资源管理",
-        component: Resource
+        component: Resource,
+        meta: { title: '资源管理' }
       },
       {
         path: '/home/user',
         name: "用户管理",
-        component: User
+        component: User,
+        meta: { title: '用户管理' }
       }
     ]
   },
   {
       path: '/order',
+      name: "订单",
       component: Home,
       children: [
           {
               path: '/',
-              component: User
+              component: welcome
           },
           {
               path: '/home/user',
-              component: User
+              component: User,
+              meta: { title: '用户管理' }
           }
       ]
   },

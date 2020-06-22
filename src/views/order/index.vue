@@ -67,13 +67,12 @@
     .order{
         width: 100%;
         height: 100%;
-        overflow: hidden;
         .main{
             position: absolute;
             left: 210px;
-            top: 64px;
+            top: 128px;
             width: calc(100% - 220px);
-            height: calc(100% - 64px);
+            height: calc(100% - 128px);
             margin: 0 auto;
             box-sizing: border-box;
         }
