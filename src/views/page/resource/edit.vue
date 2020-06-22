@@ -28,7 +28,7 @@
 
 <script>
 
-    import {fetchResource, saveResource, getResource} from '@/api/resource'
+    import {updateResource, getResource, asyncResource} from '@/api/resource'
     import { formdata } from '@/utils/tool'
 
     import Treeselect from '@riophae/vue-treeselect'
@@ -59,19 +59,20 @@
                 treeSelData: [],
                 dialogTableTitle: '',
                 dialogEditVisible: false,
-                isDisabled: false
+                isDisabled: false,
+                parentId: ''
             }
         },
 
         created () {
-            this.getData()
+
         },
         methods: {
             // 获取数据
             getData () {
                 const _this = this
-                fetchResource().then((res) => {
-                    _this.treeSelData = res.data
+                asyncResource({id:this.ruleForm.id}).then((res) => {
+                    _this.treeSelData = res.data;
                     for (let i = 0; i < _this.treeSelData.length; i++) {
                         _this.treeSelData[i].childrens = null
                     }
@@ -86,9 +87,11 @@
                     for(let key in this.ruleForm){
                         this.ruleForm[key] = res.data[key];
                     }
+//                    this.parentId  = res.data.parentId
                     if(this.ruleForm.parentId == ''){
                         this.ruleForm.parentId = null
                     }
+                    this.getData();
                 }).catch((err) => {
                     console.log(err)
                 })
@@ -107,10 +110,13 @@
             },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
+                console.log(parentNode)
                 let params = {
-                    id: parentNode.id
+                    id: this.ruleForm.id,
+                    parentId: parentNode.id
                 }
-                fetchResource(params).then((res) => {
+                asyncResource(params).then((res) => {
+                    console.log(res,'res')
                     parentNode.childrens = res.data
                     callback()
                 }).catch((err) => {
@@ -121,7 +127,7 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        saveResource(formdata(this.ruleForm),
+                        updateResource(formdata(this.ruleForm),
                             (isShow) => {
                                 if (isShow) {
                                     _this.isDisabled = true;

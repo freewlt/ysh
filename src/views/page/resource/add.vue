@@ -28,7 +28,7 @@
 
 <script>
 
-    import {fetchResource, saveResource, getResource} from '@/api/resource'
+    import {asyncResource, saveResource} from '@/api/resource'
     import { formdata } from '@/utils/tool'
 
     import Treeselect from '@riophae/vue-treeselect'
@@ -61,34 +61,26 @@
                 isDisabled: false
             }
         },
-
-        created () {
-            this.getData()
-        },
         methods: {
             // 获取数据
             getData () {
                 const _this = this
-                fetchResource().then((res) => {
-                    _this.treeSelData = res.data
+                asyncResource().then((res) => {
+                    _this.treeSelData = res.data;
                     for (let i = 0; i < _this.treeSelData.length; i++) {
-                        _this.treeSelData[i].childrens = null
+                        if (_this.treeSelData[i].childCount>0){
+                            _this.treeSelData[i].childrens = null;
+                        }else{
+                            delete _this.treeSelData[i].childrens;
+                        }
                     }
                 }).catch((err) => {
                     console.log(err)
                 })
             },
-            editBtn (id) {
-                getResource(id).then((res) => {
-                    this.ruleForm =res.data
-                    if(this.ruleForm.parentId == ''){
-                        this.ruleForm.parentId = null
-                    }
-                }).catch((err) => {
-                    console.log(err)
-                })
+            addBtn () {
+                this.getData();
             },
-
 
             /** 转换菜单数据结构 */
             normalizer (node) {
@@ -104,10 +96,19 @@
             // 懒加载
             loadOptions ({ parentNode, callback }) {
                 let params = {
-                    id: parentNode.id
+                    parentId: parentNode.id
                 }
-                fetchResource(params).then((res) => {
-                    parentNode.childrens = res.data
+                asyncResource(params).then((res) => {
+                    let childrenArray = [];
+                    for (let i = 0; i < res.data.length; i++) {
+                        if (res.data[i].childCount > 0){
+                            res.data[i].childrens = null;
+                        } else {
+                            delete res.data[i].childrens;
+                        }
+                        childrenArray.push(res.data[i])
+                    }
+                    parentNode.childrens = childrenArray;
                     callback()
                 }).catch((err) => {
                     console.log(err)

@@ -23,6 +23,9 @@ export function deleteResource(id, showLoading = () => {}) {
   return get('/resource/delete/' + id, { showLoading })
 }
 
+export function asyncResource(params = {}, showLoading = () => {}) {
+    return get('/resource/async-tree', params, { showLoading })
+}
 
 
 // --------------------------------------------------------------

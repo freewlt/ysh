@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {fetchResource, deleteResource} from '@/api/resource'
+import {deleteResource, asyncResource} from '@/api/resource'
 
 import ShadeBox from '@/components/common/loading/shadeBox'
 import ResourceDialogAdd from "./add";
@@ -64,8 +64,9 @@ export default {
   methods: {
     // 添加对话框
     dialogTableAdd(e) {
-      this.$refs.elDialogAdd.dialogAddVisible  = true
-      this.dialogAddTitle = e
+      this.$refs.elDialogAdd.dialogAddVisible  = true;
+      this.dialogAddTitle = e;
+      this.$refs.elDialogAdd.addBtn()
     },
     // 编辑
     editBtn(index, row, title) {
@@ -97,17 +98,17 @@ export default {
     },
     load (tree, treeNode, resolve) {
       let params = {
-        id: tree.id
+        parentId: tree.id
       }
-      fetchResource(params).then((res) => {
+      asyncResource(params).then((res) => {
               resolve(res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     treeSelLoad () {
-      const _this = this
-      fetchResource().then(function (res) {
+      const _this = this;
+      asyncResource().then(function (res) {
         //        console.log(res.data)
         _this.treeSelData = res.data
       })
