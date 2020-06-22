@@ -1,7 +1,8 @@
 <template>
   <div class="breadCrumbBox">
     <el-breadcrumb separator="/">
-      <el-breadcrumb-item class="breakLink" v-for="item in breadList" :to="{path:item.path}" :key="item.path">{{item.name}}
+      <el-breadcrumb-item class="breakLink" v-for="item in breadList" :key="item.path">
+        <router-link :to="{path:item.path}">{{item.name}}</router-link>
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>
@@ -22,5 +23,11 @@ export default {
     width: 100%;
     padding: 20px;
     background: #fff;
+    .el-breadcrumb__item{
+      cursor: pointer!important;
+      a{
+        cursor: pointer!important;
+      }
+    }
   }
 </style>

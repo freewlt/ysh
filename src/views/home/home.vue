@@ -22,10 +22,10 @@ export default {
           'modifyDate': '2016-07-21 18:40:24',
           'flag': true,
           'orders': '1',
-          'name': '人员管理',
+          'name': '资源管理',
           'parentId': '12029684246118400',
           'remark': '用户管理',
-          'url': '/admin/admin/list.jhtml',
+          'url': '/home/resource',
           'type': '1',
           'large': '',
           'medium': 'http://192.168.0.8:8083/image/upload/image/menu/2016/07/21/p1ao6g3g9kvum632101s10ig4ee5.png',
@@ -41,10 +41,10 @@ export default {
           'modifyDate': '2016-07-21 18:31:47',
           'flag': true,
           'orders': '2',
-          'name': '角色管理',
+          'name': '用户管理',
           'parentId': '12029684246118400',
           'remark': '角色管理',
-          'url': '/admin/role/list.jhtml',
+          'url': '/home/user',
           'type': '1',
           'large': '',
           'medium': 'http://192.168.0.8:8083/image/upload/image/menu/2016/07/21/p1ao6g5cpl4uk114qhg012b8kk75.png',
@@ -405,7 +405,6 @@ export default {
   .home{
     width: 100%;
     height: 100%;
-    overflow: hidden;
     .main{
       position: absolute;
       left: 210px;

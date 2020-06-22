@@ -3,12 +3,11 @@
  */
 import axios from 'axios'
 import store from '@/utils/store'
-import router from '@/router'
 
 import { Loading, Message } from 'element-ui'
 
  
-const locationURl = '/api';
+const locationURl = 'http://192.168.0.114:7000/api-base';
 const config = {
   baseURL: process.env.NODE_ENV === 'production' ? process.env.BASE_API : locationURl,
   timeout: 1000
@@ -72,21 +71,21 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   res => {
     // endLoading ()
-    if (res.status === 401) {
-      store.dispatch('FedLogOut').then(() => {
-        router.push({path: '/login'})
-      })
-      return
-    }
-
-    if (res.status !== 200 || res.data.code === 1) {
-      Message({
-        message: res.data.message,
-        type: 'error'
-      })
+    // if (res.status === 401) {
+    //   return
+    // }
+    //   console.log(res)
+    if (res.status !== 200 || res.data.result !== 'SUCCESS') {
+        Message({
+            message: res.data.message,
+            type: 'error'
+        });
       return Promise.reject(new Error(res.data.message))
     }
-    return res
+    if (res.status == 200 || res.data.result === 'SUCCESS') {
+        return res
+    }
+    // return res
   },
   err => {
     // endLoading ()

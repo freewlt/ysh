@@ -1,29 +1,29 @@
 <template>
-    <el-dialog class="resourceDialogAdd" :title="dialogTableTitle" :visible.sync="dialogAddVisible">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
-            <el-form-item label="名称" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="请输入名称"></el-input>
-            </el-form-item>
-            <el-form-item label="上级菜单">
-                <treeselect
-                        :options="treeSelData"
-                        :normalizer="normalizer"
-                        :load-options="loadOptions"
-                        placeholder="请选择"
-                        v-model="ruleForm.parentId"
-                />
-            </el-form-item>
-            <el-form-item label="排序" prop="sort">
-                <el-input v-model="ruleForm.sort" placeholder="请输入排序"></el-input>
-            </el-form-item>
-            <el-form-item label="url">
-                <el-input v-model="ruleForm.url" placeholder="请输入url"></el-input>
-            </el-form-item>
-            <el-form-item class="btnGroup">
-                <el-button type="primary" @click="submitForm('ruleForm')" :disabled="isDisabled">保 存</el-button>
-            </el-form-item>
-        </el-form>
-    </el-dialog>
+  <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="ruleForm.name" placeholder="请输入名称"></el-input>
+      </el-form-item>
+      <el-form-item label="上级菜单">
+        <treeselect
+                :options="treeSelData"
+                :normalizer="normalizer"
+                :load-options="loadOptions"
+                placeholder="请选择"
+                v-model="ruleForm.parentId"
+        />
+      </el-form-item>
+      <el-form-item label="排序" prop="sort">
+        <el-input v-model="ruleForm.sort" placeholder="请输入排序"></el-input>
+      </el-form-item>
+      <el-form-item label="url">
+        <el-input v-model="ruleForm.url" placeholder="请输入url"></el-input>
+      </el-form-item>
+      <el-form-item class="btnGroup">
+        <el-button type="primary" @click="submitForm('ruleForm')" :disabled="isDisabled">保 存</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
 </template>
 
 <script>
@@ -35,9 +35,8 @@
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
     export default {
-        name: 'resourceDialogAdd',
+        name: 'resourceDialogEdit',
         components: { Treeselect },
-        props: ['dialogTableTitle'],
         data () {
             return {
                 ruleForm: {
@@ -57,7 +56,8 @@
                     ]
                 },
                 treeSelData: [],
-                dialogAddVisible: false,
+                dialogTableTitle: '',
+                dialogEditVisible: false,
                 isDisabled: false
             }
         },
@@ -78,7 +78,8 @@
                     console.log(err)
                 })
             },
-            editBtn (id) {
+            editBtn (id,title) {
+                this.dialogTableTitle = title
                 getResource(id).then((res) => {
                     this.ruleForm =res.data
                     if(this.ruleForm.parentId == ''){
@@ -88,7 +89,6 @@
                     console.log(err)
                 })
             },
-
 
             /** 转换菜单数据结构 */
             normalizer (node) {
@@ -131,12 +131,16 @@
                             this.$refs[formName].resetFields()
                             _this.ruleForm.menu = null
                             _this.ruleForm.url = ''
-                            this.dialogTableVisible = false
+                            this.dialogEditVisible = false
+                            console.log(res)
                             _this.$message({
                                 message: res.message,
                                 type: 'success'
                             })
                         })
+                    } else {
+                        console.log('error submit!!')
+                        return false
                     }
                 })
             }
@@ -145,22 +149,22 @@
 </script>
 
 <style lang="less" scoped>
-    .resourceDialogAdd{
-        .el-form{
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            width: 100%;
-            margin:0 auto;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            .el-form-item{
-                width: 50%;
-            }
-            .btnGroup{
-                width: 100%;
-            }
-        }
+  .resourceDialogEdit{
+    .el-form{
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      width: 100%;
+      margin:0 auto;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      .el-form-item{
+        width: 50%;
+      }
+      .btnGroup{
+        width: 100%;
+      }
     }
+  }
 </style>

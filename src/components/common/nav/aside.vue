@@ -4,6 +4,13 @@
       <div class="logoBox">
         <img class="logo" src="../../../assets/img/login/logo.png" title="汽车易生活">
       </div>
+      <div class="center">
+        <el-menu class="navMenu" mode="horizontal">
+          <el-menu-item v-for="item in navMenuList" :key="item.id">
+            <router-link :to="{path:item.path}">{{item.name}}</router-link>
+          </el-menu-item>
+        </el-menu>
+      </div>
       <div class="right"><i class="el-icon-edit"></i>
         <i class="notices el-icon-message-solid"></i>
         <el-dropdown class="dropDown" @command="handleCommand">
@@ -20,7 +27,7 @@
     <div class="navBtn">
       <el-menu class="el-menu-vertical-demo">
         <template v-for="item in list">
-          <router-link :to="{path:item.path}" v-if="item.children" :key="item.name">
+          <router-link :to="{path:item.url}" v-if="item.children" :key="item.name">
             <el-submenu :index="item.name" @click="menuClick(item.name)">
               <template slot="title">
                 <!--<img :src="item.name === selectedMenuId ? item.mediumBg : item.medium">-->
@@ -28,13 +35,13 @@
                 <span>{{item.name}}</span>
               </template>
               <el-menu-item v-for="subItem in item.children" :index="subItem.name" :key="subItem.name">
-                <router-link :to="{path:subItem.path}">
+                <router-link :to="{path:subItem.url}">
                   {{subItem.name}}
               </router-link>
               </el-menu-item>
             </el-submenu>
           </router-link>
-          <router-link :to="{path:item.path}" :key="item.name" v-else>
+          <router-link :to="{path:item.url}" :key="item.name" v-else>
             <el-menu-item :index="item.name" @click="menuClick(item.name)">
               <template slot="title">
                 <!--<img :src="item.name === selectedMenuId ? item.mediumBg : item.medium">-->
@@ -55,7 +62,11 @@ export default {
   name: 'asideBox',
   data () {
     return {
-      selectedMenuId: ''
+      selectedMenuId: '',
+      navMenuList: [
+          {'id': '124','name': '首页',path:'/home'},
+          {'id': '8544','name': '用户管理',path:'/order'}
+      ]
     }
   },
   props: {
@@ -83,6 +94,7 @@ export default {
     width: 100%;
     .headBox {
       width: 100%;
+      /*min-width: 1300px;*/
       height: 64px;
       overflow: hidden;
       background-color: rgba(0, 24, 46, 1);
@@ -91,16 +103,29 @@ export default {
       .logoBox{
         display: inline-block;
         vertical-align: middle;
-        width:50%;
+        width:30%;
+        .logo {
+          display: inline-block;
+          vertical-align: middle;
+        }
       }
-      .logo {
+      .center{
         display: inline-block;
         vertical-align: middle;
+        width:50%;
+        .navMenu{
+          background: transparent;
+          border: none;
+          li:hover{
+            color: #409EFF;
+            background: transparent;
+          }
+        }
       }
       .right{
         display: inline-block;
         vertical-align: middle;
-        width:50%;
+        width:20%;
         text-align: right;
         .notices{
           display: inline-block;

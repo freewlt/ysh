@@ -5,7 +5,7 @@
     <!--主要内容-->
     <div class="content">
       <div class="btnCondition">
-        <el-button type="primary" @click="dialogTable('添加')">添 加</el-button>
+        <el-button type="primary" @click="dialogTableAdd('添加')">添 加</el-button>
       </div>
       <div class="dataTable">
         <el-table
@@ -14,7 +14,7 @@
           border
           lazy
           :load="load"
-          :tree-props="{children: 'childrens', hasChildren: 'flag'}">
+          :tree-props="{children: 'childrens', hasChildren: 'parent'}">
           <template v-for="item in tableHeaders">
             <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
           </template>
@@ -27,90 +27,80 @@
         </el-table>
       </div>
     </div>
+    <!--弹窗资源编辑-->
+    <resource-dialog-edit ref="elDialogEdit"></resource-dialog-edit>
     <!--弹窗资源新建-->
-    <resource-add ref="elDialog" :dialogTableTitle="dialogTableTitle"></resource-add>
+    <resource-dialog-add ref="elDialogAdd" :dialogTableTitle="dialogAddTitle"></resource-dialog-add>
     <!-- loading -->
     <shade-box v-if="isShow"></shade-box>
   </div>
 </template>
 
 <script>
-import {fetchMenu, getResource, deleteTreeData} from '@/api/menu'
-import {setStore} from '@/utils/localStorage'
+import {fetchResource, deleteResource} from '@/api/resource'
 
-// import ResourceTable from '@/components/resource/tableLoad'
 import BreadCrumbBox from '@/components/common/breadCrumb/breadCrumb'
-import resourceAdd from './add'
 import ShadeBox from '@/components/common/loading/shadeBox'
+import ResourceDialogAdd from "./add";
+import ResourceDialogEdit from "./edit";
 
 export default {
   name: 'resource',
-  components: {ShadeBox, resourceAdd, BreadCrumbBox},
+  components: {ResourceDialogEdit, ResourceDialogAdd, ShadeBox, BreadCrumbBox},
   data () {
     return {
-      breadList: [
-        {name: '首页', path: '/home'},
-        {name: '资源管理', path: '/home/resource'}
-      ],
+      breadList: [],
       tableHeaders: [
         {prop: 'name', label: '名称'},
         {prop: 'url', label: 'url'},
         {prop: 'createDate', label: '创建时间'}
       ],
       treeSelData: [],
-      dialogVisible: false,
-      dialogTableTitle: '',
+      dialogEditTitle: '',
+      dialogAddTitle: '',
       isShow: false
     }
   },
   created () {
     this.treeSelLoad()
+    this.breadNav()
   },
   methods: {
-    // 显示对话框
-    dialogTable (e) { 
-      this.$refs.elDialog.dialogTableVisible  = true
-      this.dialogTableTitle = e
+    // 面包屑导航获取
+    breadNav () {
+      this.breadList = this.$route.matched
+    },
+    // 添加对话框
+    dialogTableAdd(e) {
+      this.$refs.elDialogAdd.dialogAddVisible  = true
+      this.dialogAddTitle = e
     },
     // 编辑
-    editBtn (index, row, title) {
-      //      const _this = this
-      console.log(row)
-      this.$refs.elDialog.dialogTableVisible  = true
-      this.dialogTableTitle = title
-      getResource(row.id, true).then((res) => {
-        const editData = res.data
-        setStore('name', editData.name)
-        setStore('sort', editData.sort)
-        setStore('url', editData.url)
-        setStore('menu', editData.parentId)
-      }).catch((err) => {
-        console.log(err)
-      })
+    editBtn(index, row, title) {
+      this.$refs.elDialogEdit.dialogEditVisible  = true
+      this.$refs.elDialogEdit.editBtn(row.id, title)
     },
     // 删除
     deleteBtn (index, row) {
-      deleteTreeData(row.id).then(() => {
+      deleteResource(row.id).then(() => {
         this.$router.go(0)
       }).catch((err) => {
         console.log(err)
       })
     },
     load (tree, treeNode, resolve) {
-      console.log(tree, 'tree.childrens')
       let params = {
         id: tree.id
       }
-      fetchMenu(params).then((res) => {
-        console.log(res.data, 'res.data')
-        resolve(res.data)
+      fetchResource(params).then((res) => {
+              resolve(res.data)
       }).catch((err) => {
         console.log(err)
       })
     },
     treeSelLoad () {
       const _this = this
-      fetchMenu().then(function (res) {
+      fetchResource().then(function (res) {
         //        console.log(res.data)
         _this.treeSelData = res.data
       })
@@ -128,6 +118,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow-y: auto;
+    /*min-width: 1100px;*/
     .content{
       min-height: calc(100% - 65px);
       .handleBtn{

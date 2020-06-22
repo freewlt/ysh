@@ -66,7 +66,7 @@
 
 <script>
 import axios from 'axios'
-import {fetchMenu} from '@/api/menu'
+import {fetchResource} from '@/api/resource'
 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -78,11 +78,8 @@ export default {
   components: { Treeselect, UserAdd, BreadCrumbBox },
   data () {
     return {
-      breadList: [
-        {name: '首页', path: '/home'},
-        {name: '人员管理', path: '/home/user'},
-        {name: '修改人员信息', path: '/home/index-system/member-edit'}
-      ],
+      breadList: [],
+      value: '',
       value1: '',
       rowData: [
         {
@@ -226,12 +223,18 @@ export default {
     })
 
     this.getData()
+    this.breadNav()
   },
   methods: {
+
+    // 面包屑导航获取
+    breadNav () {
+        this.breadList = this.$route.matched
+    },
     // 获取数据
     getData () {
       const _this = this
-      fetchMenu().then((res) => {
+      fetchResource().then((res) => {
         _this.treeSelData = res.data
         for (let i = 0; i < _this.treeSelData.length; i++) {
           _this.treeSelData[i].childrens = null
@@ -253,7 +256,7 @@ export default {
       let params = {
         id: parentNode.id
       }
-      fetchMenu(params).then((res) => {
+      fetchResource(params).then((res) => {
         //        parentNode.childrens = [{
         //          id: '141',
         //          name: '15'

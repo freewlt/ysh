@@ -15,6 +15,7 @@ const routes = [
   },
   {
     path: '/home',
+    name: "首页",
     component: Home,
     children: [
       {
@@ -22,19 +23,31 @@ const routes = [
         component: welcome
       },
       {
-        path: '/user',
-        component: User
+        path: '/home/resource',
+        name: "资源管理",
+        component: Resource
       },
       {
-        path: '/resource',
-        component: Resource
+        path: '/home/user',
+        name: "用户管理",
+        component: User
       }
     ]
   },
   {
-    path: '/home/:name',
-    component: Home
-  }
+      path: '/order',
+      component: Home,
+      children: [
+          {
+              path: '/',
+              component: User
+          },
+          {
+              path: '/home/user',
+              component: User
+          }
+      ]
+  },
 ]
 const router = new VueRouter({
   routes,
