@@ -1,20 +1,37 @@
 <template>
   <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible" :close-on-click-modal= "false">
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
+    <!--<el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">-->
+      <!--<el-form-item label="名称" prop="name">-->
+        <!--<el-input v-model="form.name" placeholder="请输入名称"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="上级菜单">-->
+        <!--<tree-select-load :treeSelData="treeSelData" v-model="form.parentId" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="排序" prop="sort">-->
+        <!--<el-input v-model="form.sort" placeholder="请输入排序"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="url">-->
+        <!--<el-input v-model="form.url" placeholder="请输入url"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item class="btnGroup">-->
+        <!--<el-button type="primary" @click="submitForm('form')" :disabled="isDisabled">保 存</el-button>-->
+      <!--</el-form-item>-->
+    <!--</el-form>-->
+    <el-form :model="this.$store.state.formResource" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
       <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
+        <el-input v-model="this.$store.state.formResource.name" placeholder="请输入名称"></el-input>
       </el-form-item>
       <el-form-item label="上级菜单">
-        <tree-select-load :treeSelData="treeSelData" v-model="form.parentId" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
+        <tree-select-load v-model="this.$store.state.formResource.parentId" :treeSelData="treeSelData" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
-        <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
+        <el-input v-model="this.$store.state.formResource.sort" placeholder="请输入排序"></el-input>
       </el-form-item>
       <el-form-item label="url">
-        <el-input v-model="form.url" placeholder="请输入url"></el-input>
+        <el-input v-model="this.$store.state.formResource.url" placeholder="请输入url"></el-input>
       </el-form-item>
       <el-form-item class="btnGroup">
-        <el-button type="primary" @click="submitForm('form')" :disabled="isDisabled">保 存</el-button>
+        <el-button type="primary" @click="submitForm('this.$store.state.formResource')" :disabled="isDisabled">保 存</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -32,13 +49,13 @@
         components: { TreeSelectLoad },
         data () {
             return {
-                form: {
-                    id: '',
-                    name: '',
-                    parentId: null,
-                    sort: '',
-                    url: ''
-                },
+//                form: {
+//                    id: '',
+//                    name: '',
+//                    parentId: null,
+//                    sort: '',
+//                    url: ''
+//                },
                 rules: {
                     name: [
                         { required: true, message: '请输入名称', trigger: 'blur' },
@@ -53,14 +70,19 @@
                 dialogTableTitle: '',
                 dialogEditVisible: false,
                 isDisabled: false,
-                parentId: ''
+                parentId: '',
             }
         },
+//        created(){
+////
+//            console.log(this.$store.state.formResource)
+//        },
         methods: {
             // 获取数据
             getData () {
                 const _this = this
-                asyncResource({id:this.form.id}).then((res) => {
+                asyncResource({id:this.$store.state.formResource.id}).then((res) => {
+//                asyncResource({id:this.form.id}).then((res) => {
                     _this.treeSelData = res.data;
                     treeSelectChild(_this.treeSelData)
                 }).catch((err) => {
@@ -68,15 +90,22 @@
                 })
             },
             editBtn (id,title) {
-                this.dialogTableTitle = title
-                this.form.id = id;
+                this.dialogTableTitle = title;
+                this.$store.commit('formResourceId', id);
+//                this.form.id = id;
                 getResource(id).then((res) => {
-                    for(let key in this.form){
-                        this.form[key] = res.data[key];
+                    console.log( res.data,' res.data')
+                    for(let key in this.$store.state.formResource){
+//                    for(let key in this.form){
+                        this.$store.state.formResource[key] = res.data[key];
+//                        this.form[key] = res.data[key];
                     }
-                    if(this.form.parentId == ''){
-                        this.form.parentId = null
+                    if(this.$store.state.formResource.parentId == ''){
+                        this.$store.state.formResource.parentId = null
                     }
+//                    if(this.form.parentId == ''){
+//                        this.form.parentId = null
+//                    }
                     this.getData();
                 }).catch((err) => {
                     console.log(err)
@@ -92,16 +121,20 @@
                 treeSelectLoad({ parentNode, callback },asyncResource, params)
             },
             inputHandle (val) {
-                this.form.parentId = val.id
+                this.$store.commit('formResourceParentId', val.id);
+//                this.form.parentId = val.id
             },
             submitForm (formName) {
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        updateResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
+                        updateResource(qs.stringify(this.$store.state.formResource), (isShow) => { isShowLoading(isShow)}).then((res) => {
+//                            updateResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
                             this.$refs[formName].resetFields()
-                            _this.form.menu = null
-                            _this.form.url = ''
+//                            _this.form.parentId = ''
+//                            _this.form.url = ''
+                            this.$store.commit('formResourceParentId', null);
+                            this.$store.commit('formResourceUrl', '');
                             this.dialogEditVisible = false
                             _this.$message({
                                 message: res.message,

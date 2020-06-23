@@ -26,7 +26,8 @@ export function treeSelectLoad ({ parentNode, callback }, url ,params){
     url(params).then((res) => {
         let childrenArray = [];
         for (let i = 0; i < res.data.length; i++) {
-            if (res.data[i].childCount > 0){
+            // if (res.data[i].childCount > 0){
+            if(parentNode.parentFlag){
                 res.data[i].childrens = null;
             } else {
                 delete res.data[i].childrens;
