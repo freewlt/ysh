@@ -1,17 +1,11 @@
 <template>
-  <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible">
+  <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible" :close-on-click-modal= "false">
     <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
       <el-form-item label="上级菜单">
-        <treeselect
-                :options="treeSelData"
-                :normalizer="normalizer"
-                :load-options="loadOptions"
-                placeholder="请选择"
-                v-model="form.parentId"
-        />
+        <tree-select-load :treeSelData="treeSelData" v-model="form.parentId" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
@@ -31,12 +25,11 @@
     import {updateResource, getResource, asyncResource} from '@/api/resource';
     import qs from 'qs';
 
-    import Treeselect from '@riophae/vue-treeselect';
-    import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+    import TreeSelectLoad from "../../../components/resource/treeSelectLoad";
 
     export default {
         name: 'resourceDialogEdit',
-        components: { Treeselect },
+        components: { TreeSelectLoad },
         data () {
             return {
                 form: {
@@ -96,31 +89,27 @@
                 })
             },
 
-            /** 转换菜单数据结构 */
-            normalizer (node) {
-                if (node.childrens && !node.childrens.length) {
-                    delete node.childrens
-                }
-                return {
-                    id: node.id,
-                    label: node.name,
-                    children: node.childrens
-                }
-            },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
-                console.log(parentNode)
                 let params = {
-                    id: this.form.id,
                     parentId: parentNode.id
                 }
                 asyncResource(params).then((res) => {
-                    console.log(res,'res')
-                    parentNode.childrens = res.data
+                    let childrenArray = [];
+                    for (let i = 0; i < res.data.length; i++) {
+                        if (res.data[i].childCount > 0){
+                            res.data[i].childrens = null;
+                        } else {
+                            delete res.data[i].childrens;
+                        }
+                        childrenArray.push(res.data[i])
+                    }
+                    parentNode.childrens = childrenArray;
                     callback()
-                }).catch((err) => {
-                    console.log(err)
                 })
+            },
+            inputHandle (val) {
+                this.form.parentId = val.id
             },
             submitForm (formName) {
                 const _this = this

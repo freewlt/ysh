@@ -39,7 +39,6 @@ export default {
     selectDepart (node) {
       this.arr.push(node.name)
       this.$emit('inputHandle', this.arr)
-      console.log(this.arr)
     }
   }
 }

@@ -1,17 +1,11 @@
 <template>
-    <el-dialog class="resourceDialogAdd" :title="dialogTableTitle" :visible.sync="dialogAddVisible">
+    <el-dialog class="resourceDialogAdd" :title="dialogTableTitle" :visible.sync="dialogAddVisible" :close-on-click-modal= "false">
         <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
             <el-form-item label="名称" prop="name">
                 <el-input v-model="form.name" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="上级菜单">
-                <treeselect
-                        :options="treeSelData"
-                        :normalizer="normalizer"
-                        :load-options="loadOptions"
-                        placeholder="请选择"
-                        v-model="form.parentId"
-                />
+                <tree-select-load :treeSelData="treeSelData" v-model="form.parentId" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
             </el-form-item>
             <el-form-item label="排序" prop="sort">
                 <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
@@ -31,12 +25,11 @@
     import {asyncResource, saveResource} from '@/api/resource'
     import qs from 'qs';
 
-    import Treeselect from '@riophae/vue-treeselect'
-    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
     export default {
         name: 'resourceDialogAdd',
-        components: { Treeselect },
+        components: {TreeSelectLoad },
         props: ['dialogTableTitle'],
         data () {
             return {
@@ -81,18 +74,6 @@
             addBtn () {
                 this.getData();
             },
-
-            /** 转换菜单数据结构 */
-            normalizer (node) {
-                if (node.childrens && !node.childrens.length) {
-                    delete node.childrens
-                }
-                return {
-                    id: node.id,
-                    label: node.name,
-                    children: node.childrens
-                }
-            },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
                 let params = {
@@ -110,9 +91,11 @@
                     }
                     parentNode.childrens = childrenArray;
                     callback()
-                }).catch((err) => {
-                    console.log(err)
                 })
+            },
+            // 接收传值
+            inputHandle (val) {
+                this.form.parentId = val.id
             },
             submitForm (formName) {
                 const _this = this
