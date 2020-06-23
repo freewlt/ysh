@@ -17,7 +17,7 @@
         <!--<el-button type="primary" @click="submitForm('form')" :disabled="isDisabled">保 存</el-button>-->
       <!--</el-form-item>-->
     <!--</el-form>-->
-    <el-form :model="this.$store.state.formResource" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
+    <!-- <el-form :model="this.$store.state.formResource" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
       <el-form-item label="名称" prop="name">
         <el-input v-model="this.$store.state.formResource.name" placeholder="请输入名称"></el-input>
       </el-form-item>
@@ -33,7 +33,7 @@
       <el-form-item class="btnGroup">
         <el-button type="primary" @click="submitForm('this.$store.state.formResource')" :disabled="isDisabled">保 存</el-button>
       </el-form-item>
-    </el-form>
+    </el-form> -->
   </el-dialog>
 </template>
 
@@ -42,11 +42,11 @@
     import {updateResource, getResource, asyncResource} from '@/api/resource';
     import {treeSelectChild,treeSelectLoad, isShowLoading} from '@/utils/tool'
 
-    import TreeSelectLoad from "@/components/resource/treeSelectLoad";
+    // import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
     export default {
         name: 'resourceDialogEdit',
-        components: { TreeSelectLoad },
+        // components: { TreeSelectLoad },
         data () {
             return {
 //                form: {

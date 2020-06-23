@@ -3,6 +3,7 @@
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
+import resource from './modules/resource'
 import mutations from './mutation'
 import getters from './getters'
 
@@ -10,14 +11,10 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
       token: null,
-      isShow: false,
-      formResource: {
-          id: '',
-          name: '',
-          parentId: null,
-          sort: '',
-          url: ''
-      }
+      loading: false,
+  },
+  modules: {
+    resource,
   },
   mutations,
   getters

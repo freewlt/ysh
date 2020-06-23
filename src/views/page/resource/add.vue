@@ -23,6 +23,7 @@
 <script>
 
     import qs from 'qs';
+    import { mapState } from 'vuex';
     import {asyncResource, saveResource} from '@/api/resource'
     import {treeSelectChild, treeSelectLoad, isShowLoading} from '@/utils/tool'
 
@@ -50,10 +51,15 @@
                         { min: 1, max: 3, message: '只能输入数字，默认500', trigger: 'blur' }
                     ]
                 },
-                treeSelData: [],
+                // treeSelData: [],
                 dialogAddVisible: false,
                 isDisabled: false
             }
+        },
+        computed: {
+            ...mapState({
+                treeSelData: (sate) => sate.resource.treeSelData,
+            })
         },
         methods: {
             // 获取数据
@@ -67,7 +73,7 @@
                 })
             },
             addBtn () {
-                this.getData();
+                // this.getData();
             },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
@@ -94,7 +100,7 @@
                                 message: res.message,
                                 type: 'success'
                             })
-                            this.$parent.getData();
+                            // this.$parent.getData();
                         })
                     }
                 })
@@ -111,8 +117,6 @@
             flex-wrap: wrap;
             width: 100%;
             margin:0 auto;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
             box-sizing: border-box;
             .el-form-item{
                 width: 50%;
