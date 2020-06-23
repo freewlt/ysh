@@ -22,8 +22,9 @@
 
 <script>
 
-    import {asyncResource, saveResource} from '@/api/resource'
     import qs from 'qs';
+    import {asyncResource, saveResource} from '@/api/resource'
+    import {treeSelectChild, treeSelectLoad, isShowLoading} from '@/utils/tool'
 
     import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
@@ -60,13 +61,7 @@
                 const _this = this
                 asyncResource().then((res) => {
                     _this.treeSelData = res.data;
-                    for (let i = 0; i < _this.treeSelData.length; i++) {
-                        if (_this.treeSelData[i].childCount>0){
-                            _this.treeSelData[i].childrens = null;
-                        }else{
-                            delete _this.treeSelData[i].childrens;
-                        }
-                    }
+                    treeSelectChild(_this.treeSelData)
                 }).catch((err) => {
                     console.log(err)
                 })
@@ -79,19 +74,8 @@
                 let params = {
                     parentId: parentNode.id
                 }
-                asyncResource(params).then((res) => {
-                    let childrenArray = [];
-                    for (let i = 0; i < res.data.length; i++) {
-                        if (res.data[i].childCount > 0){
-                            res.data[i].childrens = null;
-                        } else {
-                            delete res.data[i].childrens;
-                        }
-                        childrenArray.push(res.data[i])
-                    }
-                    parentNode.childrens = childrenArray;
-                    callback()
-                })
+                // 加载 childrens 数据
+                treeSelectLoad({ parentNode, callback },asyncResource, params)
             },
             // 接收传值
             inputHandle (val) {
@@ -101,19 +85,9 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        saveResource(qs.stringify(this.form),
-                            (isShow) => {
-                                if (isShow) {
-                                    _this.isDisabled = true;
-                                    this.$store.commit('isShow', true);
-                                } else {
-                                    _this.isDisabled = false;
-                                    this.$store.commit('isShow', false);
-                                }
-                            }
-                        ).then((res) => {
+                        saveResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
                             this.$refs[formName].resetFields()
-                            _this.form.menu = null
+                            _this.form.parentId = null
                             _this.form.url = ''
                             this.dialogAddVisible = false
                             _this.$message({

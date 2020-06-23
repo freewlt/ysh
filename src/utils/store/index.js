@@ -10,7 +10,14 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
       token: null,
-      isShow: false
+      isShow: false,
+      formResource: {
+          id: '',
+          name: '',
+          parentId: null,
+          sort: '',
+          url: ''
+      }
   },
   mutations,
   getters

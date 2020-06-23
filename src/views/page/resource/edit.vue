@@ -21,11 +21,11 @@
 </template>
 
 <script>
-
-    import {updateResource, getResource, asyncResource} from '@/api/resource';
     import qs from 'qs';
+    import {updateResource, getResource, asyncResource} from '@/api/resource';
+    import {treeSelectChild,treeSelectLoad, isShowLoading} from '@/utils/tool'
 
-    import TreeSelectLoad from "../../../components/resource/treeSelectLoad";
+    import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
     export default {
         name: 'resourceDialogEdit',
@@ -56,19 +56,13 @@
                 parentId: ''
             }
         },
-
-        created () {
-
-        },
         methods: {
             // 获取数据
             getData () {
                 const _this = this
                 asyncResource({id:this.form.id}).then((res) => {
                     _this.treeSelData = res.data;
-                    for (let i = 0; i < _this.treeSelData.length; i++) {
-                        _this.treeSelData[i].childrens = null
-                    }
+                    treeSelectChild(_this.treeSelData)
                 }).catch((err) => {
                     console.log(err)
                 })
@@ -94,19 +88,8 @@
                 let params = {
                     parentId: parentNode.id
                 }
-                asyncResource(params).then((res) => {
-                    let childrenArray = [];
-                    for (let i = 0; i < res.data.length; i++) {
-                        if (res.data[i].childCount > 0){
-                            res.data[i].childrens = null;
-                        } else {
-                            delete res.data[i].childrens;
-                        }
-                        childrenArray.push(res.data[i])
-                    }
-                    parentNode.childrens = childrenArray;
-                    callback()
-                })
+                // 加载 childrens 数据
+                treeSelectLoad({ parentNode, callback },asyncResource, params)
             },
             inputHandle (val) {
                 this.form.parentId = val.id
@@ -115,17 +98,7 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        updateResource(qs.stringify(this.form),
-                          (isShow) => {
-                              if (isShow) {
-                                  _this.isDisabled = true;
-                                  this.$store.commit('isShow', true);
-                              } else {
-                                  _this.isDisabled = false;
-                                  this.$store.commit('isShow', false);
-                              }
-                          }
-                        ).then((res) => {
+                        updateResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
                             this.$refs[formName].resetFields()
                             _this.form.menu = null
                             _this.form.url = ''
