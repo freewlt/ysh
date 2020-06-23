@@ -4,6 +4,10 @@
       <el-form-item label="活动名称" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
+      <el-form-item label="上级菜单" prop="name">
+        <!--<el-input v-model="ruleForm.menuId"></el-input>-->
+        <tree-select-load></tree-select-load>
+      </el-form-item>
       <el-form-item label="活动名称">
         <input-tip :msg="msg" @inputHandle="inputHandle"></input-tip>
       </el-form-item>
@@ -56,16 +60,19 @@
 </template>
 
 <script>
-import axios from 'axios'
+import {fetchResource} from '@/api/resource'
+
 import InputTip from '@/components/inputTip'
 import ResourceTable from '@/components/resource/tableLoad'
+import TreeSelectLoad from "../../../components/resource/treeSelectLoad";
 export default {
   name: 'userAdd',
-  components: {ResourceTable, InputTip},
+  components: {TreeSelectLoad, ResourceTable, InputTip},
   data () {
     return {
       ruleForm: {
         name: '',
+        menuId:'',
         region: '',
         date1: '',
         date2: '',
@@ -110,9 +117,8 @@ export default {
     }
   },
   created () {
-    var _this = this
-    axios.get('http://192.168.0.226:7070/api-base/permission/tree-nodes')
-      .then(function (response) {
+    const _this = this
+    fetchResource().then(function (response) {
         _this.rowData = response.data.data
       })
       .catch(function (error) {

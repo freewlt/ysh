@@ -1,8 +1,8 @@
 <template>
     <el-dialog class="resourceDialogAdd" :title="dialogTableTitle" :visible.sync="dialogAddVisible">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
+        <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
             <el-form-item label="名称" prop="name">
-                <el-input v-model="ruleForm.name" placeholder="请输入名称"></el-input>
+                <el-input v-model="form.name" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="上级菜单">
                 <treeselect
@@ -10,17 +10,17 @@
                         :normalizer="normalizer"
                         :load-options="loadOptions"
                         placeholder="请选择"
-                        v-model="ruleForm.parentId"
+                        v-model="form.parentId"
                 />
             </el-form-item>
             <el-form-item label="排序" prop="sort">
-                <el-input v-model="ruleForm.sort" placeholder="请输入排序"></el-input>
+                <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
             </el-form-item>
             <el-form-item label="url">
-                <el-input v-model="ruleForm.url" placeholder="请输入url"></el-input>
+                <el-input v-model="form.url" placeholder="请输入url"></el-input>
             </el-form-item>
             <el-form-item class="btnGroup">
-                <el-button type="primary" @click="submitForm('ruleForm')" :disabled="isDisabled">保 存</el-button>
+                <el-button type="primary" @click="submitForm('form')" :disabled="isDisabled">保 存</el-button>
             </el-form-item>
         </el-form>
     </el-dialog>
@@ -29,7 +29,6 @@
 <script>
 
     import {asyncResource, saveResource} from '@/api/resource'
-    // import { formdata } from '@/utils/tool'
     import qs from 'qs';
 
     import Treeselect from '@riophae/vue-treeselect'
@@ -41,7 +40,7 @@
         props: ['dialogTableTitle'],
         data () {
             return {
-                ruleForm: {
+                form: {
                     name: '',
                     parentId: null,
                     sort: '',
@@ -119,27 +118,26 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        console.log(this.ruleForm.parentId===null);
-                        saveResource(qs.stringify(this.ruleForm),
+                        saveResource(qs.stringify(this.form),
                             (isShow) => {
                                 if (isShow) {
                                     _this.isDisabled = true;
-                                    this.$emit('').$parent.isShow = true
+                                    this.$store.commit('isShow', true);
                                 } else {
                                     _this.isDisabled = false;
-                                    this.$emit('').$parent.isShow = false
+                                    this.$store.commit('isShow', false);
                                 }
                             }
                         ).then((res) => {
                             this.$refs[formName].resetFields()
-                            _this.ruleForm.menu = null
-                            _this.ruleForm.url = ''
+                            _this.form.menu = null
+                            _this.form.url = ''
                             this.dialogAddVisible = false
                             _this.$message({
                                 message: res.message,
                                 type: 'success'
                             })
-                            this.$router.go(0)
+                            this.$parent.getData();
                         })
                     }
                 })

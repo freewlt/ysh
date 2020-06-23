@@ -8,13 +8,6 @@
         <el-input class="nouVen" placeholder="请输入内容"></el-input>
         <el-date-picker class="dateChose" v-model="value1" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
         <el-button type="primary">搜索</el-button>
-        <treeselect
-          :options="treeSelData"
-          :normalizer="normalizer"
-          :load-options="loadOptions"
-          placeholder="Try expanding any folder option..."
-          v-model="value"
-        />
       </div>
     </div>
     <!--内容-->
@@ -63,16 +56,13 @@
 </template>
 
 <script>
-import axios from 'axios'
 import {fetchResource} from '@/api/resource'
 
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import UserAdd from './add'
 
 export default {
   name: 'user',
-  components: { Treeselect, UserAdd },
+  components: { UserAdd },
   data () {
     return {
       breadList: [],
@@ -213,7 +203,7 @@ export default {
   },
   created () {
     var _this = this
-    axios.get('http://192.168.0.226:7070/api-base/permission/tree-nodes').then(function (res) {
+    fetchResource().then(function (res) {
       _this.treeSelData = res.data.data
     }).catch(function (error) {
       console.log(error)
@@ -272,9 +262,6 @@ export default {
 
 <style lang="less" scoped>
   .user {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
     .content{
       max-height: calc(100% - 128px);
       min-height: calc(100% - 92px);

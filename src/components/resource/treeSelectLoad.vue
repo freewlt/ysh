@@ -1,18 +1,24 @@
 <template>
   <div class="treeSelectLoad">
+    <!--<treeselect-->
+      <!--:options="treeSelData"-->
+      <!--:normalizer="normalizer"-->
+      <!--:load-options="loadOptions"-->
+      <!--placeholder="请选择"-->
+      <!--v-model="value"-->
+      <!--@select="selectDepart"-->
+    <!--/>-->
     <treeselect
-      :options="treeSelData"
-      :normalizer="normalizer"
-      :load-options="loadOptions"
-      placeholder="请选择"
-      v-model="value"
-      @select="selectDepart"
+        :options="treeSelData"
+        :normalizer="normalizer"
+        placeholder="请选择"
+        v-model="value"
     />
   </div>
 </template>
 
 <script>
-import {fetchMenu} from '@/utils/api/menu'
+//import {fetchMenu} from '@/utils/api/menu'
 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -25,21 +31,21 @@ export default {
     value: null
   }),
   created () {
-    this.getData()
+//    this.getData()
   },
   methods: {
     // 获取数据
-    getData () {
-      const _this = this
-      fetchMenu().then((res) => {
-        _this.treeSelData = res.data
-        for (let i = 0; i < _this.treeSelData.length; i++) {
-          _this.treeSelData[i].childrens = null
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+//    getData () {
+//      const _this = this
+//      fetchMenu().then((res) => {
+//        _this.treeSelData = res.data
+//        for (let i = 0; i < _this.treeSelData.length; i++) {
+//          _this.treeSelData[i].childrens = null
+//        }
+//      }).catch((err) => {
+//        console.log(err)
+//      })
+//    },
     /** 转换菜单数据结构 */
     normalizer (node) {
       return {
@@ -49,21 +55,21 @@ export default {
       }
     },
     // 懒加载
-    loadOptions ({ action, parentNode, callback }) {
-      let params = {
-        id: parentNode.id
-      }
-      fetchMenu(params).then((res) => {
-        parentNode.childrens = res.data
-        callback()
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
+//    loadOptions ({ action, parentNode, callback }) {
+//      let params = {
+//        id: parentNode.id
+//      }
+//      fetchMenu(params).then((res) => {
+//        parentNode.childrens = res.data
+//        callback()
+//      }).catch((err) => {
+//        console.log(err)
+//      })
+//    },
     // 传值
-    selectDepart (val) {
-      this.$emit('inputHandle', val)
-    }
+//    selectDepart (val) {
+//      this.$emit('inputHandle', val)
+//    }
   }
 }
 </script>

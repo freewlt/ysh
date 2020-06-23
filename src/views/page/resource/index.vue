@@ -29,24 +29,20 @@
     <resource-dialog-edit ref="elDialogEdit"></resource-dialog-edit>
     <!--弹窗资源新建-->
     <resource-dialog-add ref="elDialogAdd" :dialogTableTitle="dialogAddTitle"></resource-dialog-add>
-    <!-- loading -->
-    <shade-box v-if="isShow"></shade-box>
   </div>
 </template>
 
 <script>
 import {deleteResource, asyncResource} from '@/api/resource'
 
-import ShadeBox from '@/components/common/loading/shadeBox'
 import ResourceDialogAdd from "./add";
 import ResourceDialogEdit from "./edit";
 
 export default {
   name: 'resource',
-  components: {ResourceDialogEdit, ResourceDialogAdd, ShadeBox},
+  components: {ResourceDialogEdit, ResourceDialogAdd},
   data () {
     return {
-      breadList: [],
       tableHeaders: [
         {prop: 'name', label: '名称'},
         {prop: 'url', label: 'url'},
@@ -59,16 +55,23 @@ export default {
     }
   },
   created () {
-    this.treeSelLoad()
+    this.getData()
   },
   methods: {
+    // 获取table数据
+    getData () {
+        const _this = this;
+        asyncResource().then(function (res) {
+            _this.treeSelData = res.data
+        })
+    },
     // 添加对话框
     dialogTableAdd(e) {
       this.$refs.elDialogAdd.dialogAddVisible  = true;
       this.dialogAddTitle = e;
       this.$refs.elDialogAdd.addBtn()
     },
-    // 编辑
+    // 编辑对话框
     editBtn(index, row, title) {
       this.$refs.elDialogEdit.dialogEditVisible  = true
       this.$refs.elDialogEdit.editBtn(row.id, title)
@@ -85,9 +88,7 @@ export default {
                     type: 'success',
                     message: '删除成功!'
                 });
-                this.$router.go(0)
-            }).catch((err) => {
-                console.log(err)
+                this.getData()
             })
         }).catch(() => {
             this.$message({
@@ -101,31 +102,15 @@ export default {
         parentId: tree.id
       }
       asyncResource(params).then((res) => {
-              resolve(res.data)
-      }).catch((err) => {
-        console.log(err)
+          resolve(res.data)
       })
     },
-    treeSelLoad () {
-      const _this = this;
-      asyncResource().then(function (res) {
-        //        console.log(res.data)
-        _this.treeSelData = res.data
-      })
-        .catch(function (error) {
-          console.log(error)
-        })
-    }
   }
 }
 </script>
 
 <style lang="less" scoped>
   .resource {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
     /*min-width: 1100px;*/
     .content{
       height: 100%;

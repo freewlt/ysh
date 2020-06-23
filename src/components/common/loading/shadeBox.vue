@@ -21,11 +21,11 @@ export default {
   position: absolute;
   left:0;
   top:0;
-  z-index: 99;
+  z-index: 9999;
   width:100%;
   height:100%;
   color: #fff;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.5);
   text-align: center;
   .loadTxt{
     padding-top:30%;

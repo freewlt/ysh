@@ -1,8 +1,8 @@
 <template>
   <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" size="small">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
       <el-form-item label="名称" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="请输入名称"></el-input>
+        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
       <el-form-item label="上级菜单">
         <treeselect
@@ -10,17 +10,17 @@
                 :normalizer="normalizer"
                 :load-options="loadOptions"
                 placeholder="请选择"
-                v-model="ruleForm.parentId"
+                v-model="form.parentId"
         />
       </el-form-item>
       <el-form-item label="排序" prop="sort">
-        <el-input v-model="ruleForm.sort" placeholder="请输入排序"></el-input>
+        <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
       </el-form-item>
       <el-form-item label="url">
-        <el-input v-model="ruleForm.url" placeholder="请输入url"></el-input>
+        <el-input v-model="form.url" placeholder="请输入url"></el-input>
       </el-form-item>
       <el-form-item class="btnGroup">
-        <el-button type="primary" @click="submitForm('ruleForm')" :disabled="isDisabled">保 存</el-button>
+        <el-button type="primary" @click="submitForm('form')" :disabled="isDisabled">保 存</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -28,18 +28,18 @@
 
 <script>
 
-    import {updateResource, getResource, asyncResource} from '@/api/resource'
-    import { formdata } from '@/utils/tool'
+    import {updateResource, getResource, asyncResource} from '@/api/resource';
+    import qs from 'qs';
 
-    import Treeselect from '@riophae/vue-treeselect'
-    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import Treeselect from '@riophae/vue-treeselect';
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
     export default {
         name: 'resourceDialogEdit',
         components: { Treeselect },
         data () {
             return {
-                ruleForm: {
+                form: {
                     id: '',
                     name: '',
                     parentId: null,
@@ -71,7 +71,7 @@
             // 获取数据
             getData () {
                 const _this = this
-                asyncResource({id:this.ruleForm.id}).then((res) => {
+                asyncResource({id:this.form.id}).then((res) => {
                     _this.treeSelData = res.data;
                     for (let i = 0; i < _this.treeSelData.length; i++) {
                         _this.treeSelData[i].childrens = null
@@ -82,14 +82,13 @@
             },
             editBtn (id,title) {
                 this.dialogTableTitle = title
-                this.ruleForm.id = id;
+                this.form.id = id;
                 getResource(id).then((res) => {
-                    for(let key in this.ruleForm){
-                        this.ruleForm[key] = res.data[key];
+                    for(let key in this.form){
+                        this.form[key] = res.data[key];
                     }
-//                    this.parentId  = res.data.parentId
-                    if(this.ruleForm.parentId == ''){
-                        this.ruleForm.parentId = null
+                    if(this.form.parentId == ''){
+                        this.form.parentId = null
                     }
                     this.getData();
                 }).catch((err) => {
@@ -112,7 +111,7 @@
             loadOptions ({ parentNode, callback }) {
                 console.log(parentNode)
                 let params = {
-                    id: this.ruleForm.id,
+                    id: this.form.id,
                     parentId: parentNode.id
                 }
                 asyncResource(params).then((res) => {
@@ -127,26 +126,26 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        updateResource(formdata(this.ruleForm),
-                            (isShow) => {
-                                if (isShow) {
-                                    _this.isDisabled = true;
-                                    this.$emit('').$parent.isShow = true
-                                } else {
-                                    _this.isDisabled = false;
-                                    this.$emit('').$parent.isShow = false
-                                }
-                            }
+                        updateResource(qs.stringify(this.form),
+                          (isShow) => {
+                              if (isShow) {
+                                  _this.isDisabled = true;
+                                  this.$store.commit('isShow', true);
+                              } else {
+                                  _this.isDisabled = false;
+                                  this.$store.commit('isShow', false);
+                              }
+                          }
                         ).then((res) => {
                             this.$refs[formName].resetFields()
-                            _this.ruleForm.menu = null
-                            _this.ruleForm.url = ''
+                            _this.form.menu = null
+                            _this.form.url = ''
                             this.dialogEditVisible = false
                             _this.$message({
                                 message: res.message,
                                 type: 'success'
                             })
-                            this.$router.go(0)
+                            this.$parent.getData();
                         })
                     } else {
                         console.log('error submit!!')

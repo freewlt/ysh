@@ -11,16 +11,16 @@ export function saveResource (data, showLoading) {
     return post('/resource/save', data, { showLoading, headers: { 'content-type': 'application/x-www-form-urlencoded' } })
 }
 
-export function getResource (id, showLoading = () => {}) {
-    return get('/resource/get/' + id, { showLoading })
+export function getResource (id) {
+    return get('/resource/get/' + id)
 }
 
 export function updateResource (data, showLoading = () => {}) {
     return post('/resource/update', data, { showLoading })
 }
 
-export function deleteResource(id, showLoading = () => {}) {
-  return get('/resource/delete/' + id, { showLoading })
+export function deleteResource(id) {
+  return get('/resource/delete/' + id)
 }
 
 export function asyncResource(params = {}, showLoading = () => {}) {

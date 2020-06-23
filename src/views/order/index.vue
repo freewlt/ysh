@@ -1,9 +1,7 @@
 <template>
     <el-container class="order">
         <aside-box :list="list"></aside-box>
-        <div class="main">
-            <router-view/>
-        </div>
+         <router-view class="main"/>
     </el-container>
 </template>
 
@@ -25,7 +23,7 @@
                         'name': '用户管理',
                         'parentId': '12029684246118400',
                         'remark': '角色管理',
-                        'url': '/home/user',
+                        'url': '/order/user',
                         'type': '1',
                         'large': '',
                         'medium': 'http://192.168.0.8:8083/image/upload/image/menu/2016/07/21/p1ao6g5cpl4uk114qhg012b8kk75.png',
@@ -44,7 +42,7 @@
                         'name': '系统设置',
                         'parentId': '12029684246118400',
                         'remark': '',
-                        'url': '/admin/setting/editPointSetting.jhtml',
+                        'url': '/order/resource',
                         'type': '1',
                         'large': '',
                         'medium': 'http://192.168.0.8:8083/image/upload/image/menu/2016/07/21/p1ao6gjprk1hi8m9q1ma37o31t9v5.png',
@@ -56,9 +54,6 @@
                     }
                 ]
             }
-        },
-        created(){
-            console.log(this.list)
         }
     }
 </script>
