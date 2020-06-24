@@ -1,49 +1,32 @@
-import store from '@/utils/store'
+// import store from '@/utils/store'
+import {Message, MessageBox} from 'element-ui'
 
-export function formdata (data) {
+export function formdata(data) {
     var formData = new FormData()
-    Object.keys(data).forEach((key)=>{
-        if(data[key]){
+    Object.keys(data).forEach((key) => {
+        if (data[key]) {
             formData.append(key, data[key])
         }
     })
     return formData
 }
 
-// vue-TreeSelect箭头是否保留
-export function treeSelectChild (params) {
-    for (let i = 0; i < params.length; i++) {
-        if (params[i].childCount>0){
-            params[i].childrens = null;
-        }else{
-            delete params[i].childrens;
-        }
-    }
+export function deleteList(url, id) {
+    MessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+    }).then(() => {
+        url(id).then(() => {
+            Message({
+                type: 'success',
+                message: '删除成功!'
+            });
+        })
+    }).catch(() => {
+        Message({
+            type: 'info',
+            message: '已取消删除'
+        });
+    });
 }
-
-// vue-TreeSelect 懒加载 childrens 数据
-export function treeSelectLoad ({ parentNode, callback }, url ,params){
-    url(params).then((res) => {
-        let childrenArray = [];
-        for (let i = 0; i < res.data.length; i++) {
-            // if (res.data[i].childCount > 0){
-            if(parentNode.parentFlag){
-                res.data[i].childrens = null;
-            } else {
-                delete res.data[i].childrens;
-            }
-            childrenArray.push(res.data[i])
-        }
-        parentNode.childrens = childrenArray;
-        callback()
-    })
-}
-
-//
-// export function isShowLoading (isShow) {
-//     if (isShow) {
-//         store.commit('isShow', true);
-//     } else {
-//         store.commit('isShow', false);
-//     }
-// }

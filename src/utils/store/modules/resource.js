@@ -1,46 +1,49 @@
 // api 
-import { asyncResource } from '@/api/resource';
+import { fetchResource, asyncResource } from '@/api/resource';
 
 // types 
-export const TREE_SEL_DATA_REQUEST= 'TREE_SEL_DATA_REQUEST';
-export const TREE_SEL_DATA_FAILURE= 'TREE_SEL_DATA_FAILURE';
-export const TREE_SEL_DATA_SUCCESS= 'TREE_SEL_DATA_SUCCESS';
+export const REQUEST_LOADING= 'REQUEST_LOADING';
+export const TREE_SEL_DATA= 'TREE_SEL_DATA';
+export const TREE_SEL_ALL= 'TREE_SEL_ALL';
+
 
 const resource = {
   state: {
-    treeSelData: [],
     loading: false,
+    treeSelData: [],
+    treeSelAll: [],
   },
   actions: {
+      reqLoading(context,params) {
+          context.commit("REQUEST_LOADING",params);
+      },
     // vue-selTree
-    async getTreeSelData ({ commit }, id, parentNode, callback) {
-      commit(TREE_SEL_DATA_REQUEST);
-      // const id = params.id;
+    async getTreeSelData ({ commit }, id) {
+        // commit(REQUEST_LOADING,true);
       try {
-          // const data = await asyncResource({ parentId: id || ''});
-          // commit(TREE_SEL_DATA_SUCCESS, { data, id });
           if(id){
               const data = await asyncResource({ parentId: id});
-              commit(TREE_SEL_DATA_SUCCESS, { data, id, parentNode, callback });
+              commit(TREE_SEL_DATA, { data, id });
           }else{
               const data = await asyncResource();
-              commit(TREE_SEL_DATA_SUCCESS, { data});
+              commit(TREE_SEL_DATA, { data});
           }
       } catch (err) {
-        commit(TREE_SEL_DATA_FAILURE);
+          commit(REQUEST_LOADING,false);
       }
-        // callback()
+    },
+    getTreeSelAll ({ commit }) {
+      fetchResource().then((data) => {
+          commit(TREE_SEL_ALL, { data });
+      })
     },
   },
   mutations: {
-    [TREE_SEL_DATA_REQUEST]: (state) => {
-      state.loading = true;
+    [REQUEST_LOADING]: (state, params) => {
+      state.loading = params;
     },
-    [TREE_SEL_DATA_FAILURE]: (state) => {
-        state.loading = false;
-    },
-    [TREE_SEL_DATA_SUCCESS]: (state, payload) => {
-      const { id, data, parentNode, callback } = payload;
+    [TREE_SEL_DATA]: (state, payload) => {
+      const { id, data } = payload;
         const resData = data.data
         resData.map((it) => {
           // if (it.parentFlag){
@@ -53,33 +56,23 @@ const resource = {
       if (!id) {
           state.treeSelData = resData;
       } else {
-          // state.treeSelData = resData;
-          // const childrenpar =  parentNode.childrens
-          parentNode.childrens =resData
-          // state.treeSelData.map((it) => {
-          //     if (it.id === id) {
-          //         it.chilrends = resData
-          //     }
-          //   });
-          // state.treeSelData = setChild
-              // state.treeSelData = setChild(state.treeSelData);
-        // const setChild = (tree) => tree.map((it) => {
-        //     return { ...it, childrens: setChild(it.childrens) };
-        //    // if (it.parentId === id) {
-        //    //   return { ...it, childrens: resData }
-        //    // } else if (it.childrens && it.childrens.length > 0) {
-        //    //   return { ...it, childrens: setChild(it.childrens) };
-        //    // } else {
-        //    //   return it
-        //    // }
-        // // });
-        //   state.treeSelData = setChild(state.treeSelData);
-          callback()
-
-          console.log(parentNode,'eg')
-          console.log(callback())
+        const setChild = (tree) => tree.map((it) => {
+           if(it.id === id) {
+             return { ...it, childrens: resData }
+           } else if (it.childrens && it.childrens.length > 0) {
+             return { ...it, childrens: setChild(it.childrens) };
+           } else {
+             return it
+           }
+        });
+        state.treeSelData = setChild(state.treeSelData);
       }
-    }
+    },
+     // tree全数据
+    [TREE_SEL_ALL]: (state, payload) => {
+          const { data } = payload;
+          state.treeSelAll = data.data;
+      }
   }
 }
 
