@@ -2,7 +2,7 @@
   <div class="breadCrumbBox">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item class="breakLink" v-for="item in breadList" :key="item.path">
-        <router-link :to="{path:item.path}">{{item.name}}</router-link>
+        <router-link :to="{path:item.path}">{{item.meta.title}}</router-link>
       </el-breadcrumb-item>
     </el-breadcrumb>
   </div>

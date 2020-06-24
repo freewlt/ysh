@@ -3,9 +3,9 @@
         <treeselect
                 :options="treeSelData"
                 :normalizer="normalizer"
-                placeholder="请选择"
-                v-model="parentId"
+                :value="parentId"
                 @select="selectDepart"
+                placeholder="请选择"
         />
     </div>
 </template>
@@ -18,9 +18,6 @@
         name: 'treeSelectSingle',
         components: {Treeselect},
         props: ['treeSelData', 'parentId'],
-        data: () => ({
-            value: null
-        }),
         methods: {
             /** 转换菜单数据结构 */
             normalizer (node) {

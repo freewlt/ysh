@@ -512,6 +512,7 @@
             // 面包屑导航获取
             breadNav () {
                 this.breadList = this.$route.matched;
+                console.log(this.$route,'$route')
             },
             handleCommand (c) {
                 switch (c) {

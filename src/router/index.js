@@ -16,7 +16,6 @@ const routes = [
     },
     {
         path: '/home',
-        name: "首页",
         component: Home,
         meta: {title: '首页'},
         children: [
@@ -26,13 +25,11 @@ const routes = [
             },
             {
                 path: 'resource',
-                name: "资源管理",
                 component: Resource,
                 meta: {title: '资源管理'}
             },
             {
                 path: 'permission',
-                name: "角色管理",
                 component: Role,
                 meta: {title: '角色管理'}
             }
@@ -40,7 +37,6 @@ const routes = [
     },
     {
         path: '/order',
-        name: "用户",
         component: Home,
         meta: {title: '用户管理'},
         children: [
@@ -50,13 +46,11 @@ const routes = [
             },
             {
                 path: 'user',
-                name: "用户管理",
                 component: User,
                 meta: {title: '用户管理'}
             },
             {
                 path: 'resource',
-                name: "资源",
                 component: Resource,
                 meta: {title: '资源'}
             }
