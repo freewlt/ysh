@@ -40,10 +40,10 @@ export function treeSelectLoad ({ parentNode, callback }, url ,params){
 }
 
 //
-export function isShowLoading (isShow) {
-    if (isShow) {
-        store.commit('isShow', true);
-    } else {
-        store.commit('isShow', false);
-    }
-}
+// export function isShowLoading (isShow) {
+//     if (isShow) {
+//         store.commit('isShow', true);
+//     } else {
+//         store.commit('isShow', false);
+//     }
+// }

@@ -24,8 +24,10 @@
 
     import qs from 'qs';
     import { mapState } from 'vuex';
-    import {asyncResource, saveResource} from '@/api/resource'
-    import {treeSelectChild, treeSelectLoad, isShowLoading} from '@/utils/tool'
+//    import {asyncResource, saveResource} from '@/api/resource'
+//    import {treeSelectChild, treeSelectLoad, isShowLoading} from '@/utils/tool'
+//    import {isShowLoading} from '@/utils/tool'
+    import {saveResource} from '@/api/resource'
 
     import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
@@ -58,31 +60,38 @@
         },
         computed: {
             ...mapState({
-                treeSelData: (sate) => sate.resource.treeSelData,
+                treeSelData: (state) => state.resource.treeSelData,
             })
         },
         methods: {
-            // 获取数据
-            getData () {
-                const _this = this
-                asyncResource().then((res) => {
-                    _this.treeSelData = res.data;
-                    treeSelectChild(_this.treeSelData)
-                }).catch((err) => {
-                    console.log(err)
-                })
-            },
             addBtn () {
-                // this.getData();
+                // 获取数据
+                this.$store.dispatch('getTreeSelData')
             },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
-                let params = {
-                    parentId: parentNode.id
-                }
-                // 加载 childrens 数据
-                treeSelectLoad({ parentNode, callback },asyncResource, params)
+//                let params = {
+//                    parentId: parentNode.id
+//                }
+                this.$store.dispatch('getTreeSelData', parentNode, { parentNode, callback })
             },
+//            getData () {
+//                const _this = this
+//                asyncResource().then((res) => {
+//                    _this.treeSelData = res.data;
+//                    treeSelectChild(_this.treeSelData)
+//                }).catch((err) => {
+//                    console.log(err)
+//                })
+//            },
+//            // 懒加载
+//            loadOptions ({ parentNode, callback }) {
+//                let params = {
+//                    parentId: parentNode.id
+//                }
+//                // 加载 childrens 数据
+//                treeSelectLoad({ parentNode, callback },asyncResource, params)
+//            },
             // 接收传值
             inputHandle (val) {
                 this.form.parentId = val.id
@@ -91,10 +100,16 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        saveResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
+                        saveResource(qs.stringify(this.form), (isShow) => {
+                            if (isShow) {
+                                this.$store.commit('TREE_SEL_DATA_REQUEST');
+                            } else {
+                                this.$store.commit('TREE_SEL_DATA_FAILURE');
+                            }
+                        }).then((res) => {
                             this.$refs[formName].resetFields()
-                            _this.form.parentId = null
-                            _this.form.url = ''
+//                            _this.form.parentId = null
+//                            _this.form.url = ''
                             this.dialogAddVisible = false
                             _this.$message({
                                 message: res.message,

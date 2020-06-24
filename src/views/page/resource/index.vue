@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import {deleteResource, asyncResource} from '@/api/resource'
 
 import ResourceDialogAdd from "./add";
@@ -48,22 +49,22 @@ export default {
         {prop: 'url', label: 'url'},
         {prop: 'createDate', label: '创建时间'}
       ],
-      treeSelData: [],
       dialogEditTitle: '',
       dialogAddTitle: '',
-      isShow: false
     }
   },
   created () {
     this.getData()
   },
+  computed: {
+      ...mapState({
+          treeSelData: (state) => state.resource.treeSelData
+      })
+  },
   methods: {
     // 获取table数据
     getData () {
-        const _this = this;
-        asyncResource().then(function (res) {
-            _this.treeSelData = res.data
-        })
+        this.$store.dispatch('getTreeSelData')
     },
     // 添加对话框
     dialogTableAdd(e) {
@@ -88,7 +89,7 @@ export default {
                     type: 'success',
                     message: '删除成功!'
                 });
-                this.getData()
+//                this.getData()
             })
         }).catch(() => {
             this.$message({

@@ -1,6 +1,6 @@
 <template>
   <el-dialog class="resourceDialogEdit" :title="dialogTableTitle" :visible.sync="dialogEditVisible" :close-on-click-modal= "false">
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">
+    <el-form :model="form" :rules="rules" ref="form" label-width="100px" class="demo-ruleForm" size="small">-->
       <el-form-item label="名称" prop="name">
       <el-input v-model="form.name" placeholder="请输入名称"></el-input>
     </el-form-item>
@@ -24,7 +24,7 @@
     import qs from 'qs';
     import { mapState } from 'vuex';
     import {updateResource, getResource} from '@/api/resource';
-//    import {isShowLoading} from '@/utils/tool'
+    import {isShowLoading} from '@/utils/tool'
 
     import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
@@ -59,13 +59,13 @@
         },
         computed: {
             ...mapState({
-                treeSelData: (state) => state.resource.treeSelData,
+                treeSelData: (sate) => sate.resource.treeSelData,
             })
         },
         methods: {
             editBtn (id,title) {
                 this.dialogTableTitle = title;
-//                this.form.id = id;
+                this.form.id = id;
                 getResource(id).then((res) => {
                     for(let key in this.form){
                         this.form[key] = res.data[key];
@@ -73,17 +73,16 @@
                     if(this.form.parentId == ''){
                         this.form.parentId = null
                     }
+                    // 获取数据
+                    this.$store.dispatch('getTreeSelData')
                 }).catch((err) => {
                     console.log(err)
                 })
-                // 获取数据
-                this.$store.dispatch('getTreeSelData')
             },
 
             // 懒加载
             loadOptions ({ parentNode, callback }) {
-//                let params = {parentId: parentNode.id}
-                this.$store.dispatch('getTreeSelData', parentNode.id, { parentNode, callback })
+                this.$store.dispatch('getTreeSelData', parentNode.id, callback)
             },
             // 接收传值
             inputHandle (val) {
@@ -93,13 +92,7 @@
                 const _this = this
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        updateResource(qs.stringify(this.form), (isShow) => {
-                            if (isShow) {
-                                this.$store.commit('TREE_SEL_DATA_REQUEST');
-                            } else {
-                                this.$store.commit('TREE_SEL_DATA_FAILURE');
-                            }
-                        }).then((res) => {
+                        updateResource(qs.stringify(this.form), (isShow) => { isShowLoading(isShow)}).then((res) => {
                             this.$refs[formName].resetFields()
                             _this.form.parentId = null
                             _this.form.url = ''
