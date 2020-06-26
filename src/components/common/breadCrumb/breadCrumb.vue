@@ -10,12 +10,12 @@
 
 <script>
 export default {
-  name: 'breadCrumbBox',
-  props: ['breadList'],
+  name: "breadCrumbBox",
+  props: ["breadList"],
   data () {
-    return {}
+    return {};
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

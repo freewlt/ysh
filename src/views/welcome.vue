@@ -5,9 +5,9 @@
 </template>
 <script>
 export default {
-  name: 'frame',
+  name: "frame",
   data () {
-    return {}
+    return {};
   }
-}
+};
 </script>

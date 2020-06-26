@@ -10,16 +10,16 @@
 
 <script>
 
-    import AsideBox from '@/components/common/nav/aside'
+    import AsideBox from "@/components/common/nav/aside";
     import ShadeBox from "@/components/common/loading/shadeBox";
 
     export default {
-        name: 'home',
+        name: "home",
         components: {ShadeBox, AsideBox},
         data () {
-            return {}
+            return {};
         }
-    }
+    };
 </script>
 
 <style lang="less" scoped="">

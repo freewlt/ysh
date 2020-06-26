@@ -33,29 +33,29 @@
 </template>
 
 <script>
-    import {mapState} from 'vuex';
-    import {deleteResource, asyncResource} from '@/api/resource'
-    import {deleteList} from '@/utils/tool'
+    import {mapState} from "vuex";
+    import {deleteResource, asyncResource} from "@/api/resource";
+    import {deleteList} from "@/utils/tool";
 
     import ResourceDialogAdd from "./add";
     import ResourceDialogEdit from "./edit";
 
     export default {
-        name: 'resource',
+        name: "resource",
         components: {ResourceDialogEdit, ResourceDialogAdd},
         data () {
             return {
                 tableHeaders: [
-                    {prop: 'name', label: '名称'},
-                    {prop: 'url', label: 'url'},
-                    {prop: 'createDate', label: '创建时间'}
+                    {prop: "name", label: "名称"},
+                    {prop: "url", label: "url"},
+                    {prop: "createDate", label: "创建时间"}
                 ],
-                dialogEditTitle: '',
-                dialogAddTitle: '',
-            }
+                dialogEditTitle: "",
+                dialogAddTitle: "",
+            };
         },
         created () {
-            this.getData()
+            this.getData();
         },
         computed: {
             ...mapState({
@@ -65,34 +65,34 @@
         methods: {
             // 获取table数据
             getData () {
-                this.$store.dispatch('getTreeSelData')
+                this.$store.dispatch("getTreeSelData");
             },
             // 添加对话框
             dialogTableAdd(e) {
                 this.$refs.elDialogAdd.dialogAddVisible = true;
                 this.dialogAddTitle = e;
-                this.$refs.elDialogAdd.addBtn()
+                this.$refs.elDialogAdd.addBtn();
             },
             // 编辑对话框
             editBtn(index, row, title) {
-                this.$refs.elDialogEdit.dialogEditVisible = true
-                this.$refs.elDialogEdit.editBtn(row.id, title)
+                this.$refs.elDialogEdit.dialogEditVisible = true;
+                this.$refs.elDialogEdit.editBtn(row.id, title);
             },
             // 删除
             deleteBtn (index, row) {
-                deleteList(deleteResource, row.id)
-                this.getData()
+                deleteList(deleteResource, row.id);
+                this.getData();
             },
             load (tree, treeNode, resolve) {
                 let params = {
                     parentId: tree.id
-                }
+                };
                 asyncResource(params).then((res) => {
-                    resolve(res.data)
-                })
+                    resolve(res.data);
+                });
             },
         }
-    }
+    };
 </script>
 
 <style lang="less" scoped>

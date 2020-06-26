@@ -9,21 +9,21 @@
 
 <script>
 export default {
-  name: 'inputTip',
+  name: "inputTip",
   props: {
     msg: String
   },
   data () {
     return {
-      currentValue: ''
-    }
+      currentValue: ""
+    };
   },
   methods: {
     childClick () {
-      this.$emit('inputHandle', this.currentValue)
+      this.$emit("inputHandle", this.currentValue);
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

@@ -1,10 +1,10 @@
 // api 
-import { fetchResource, asyncResource } from '@/api/resource';
+import { fetchResource, asyncResource } from "@/api/resource";
 
 // types 
-export const REQUEST_LOADING= 'REQUEST_LOADING';
-export const TREE_SEL_DATA= 'TREE_SEL_DATA';
-export const TREE_SEL_ALL= 'TREE_SEL_ALL';
+export const REQUEST_LOADING= "REQUEST_LOADING";
+export const TREE_SEL_DATA= "TREE_SEL_DATA";
+export const TREE_SEL_ALL= "TREE_SEL_ALL";
 
 
 const resource = {
@@ -35,7 +35,7 @@ const resource = {
     getTreeSelAll ({ commit }) {
       fetchResource().then((data) => {
           commit(TREE_SEL_ALL, { data });
-      })
+      });
     },
   },
   mutations: {
@@ -44,7 +44,7 @@ const resource = {
     },
     [TREE_SEL_DATA]: (state, payload) => {
       const { id, data } = payload;
-        const resData = data.data
+        const resData = data.data;
         resData.map((it) => {
           // if (it.parentFlag){
           if(it.childCount > 0){
@@ -52,17 +52,17 @@ const resource = {
           }else{
               delete it.childrens;
           }
-      })
+      });
       if (!id) {
           state.treeSelData = resData;
       } else {
         const setChild = (tree) => tree.map((it) => {
            if(it.id === id) {
-             return { ...it, childrens: resData }
+             return { ...it, childrens: resData };
            } else if (it.childrens && it.childrens.length > 0) {
              return { ...it, childrens: setChild(it.childrens) };
            } else {
-             return it
+             return it;
            }
         });
         state.treeSelData = setChild(state.treeSelData);
@@ -74,6 +74,6 @@ const resource = {
           state.treeSelAll = data.data;
       }
   }
-}
+};
 
 export default resource;

@@ -22,38 +22,38 @@
 
 <script>
 
-    import qs from 'qs';
-    import { mapState } from 'vuex';
-    import {saveResource} from '@/api/resource'
+    import qs from "qs";
+    import { mapState } from "vuex";
+    import {saveResource} from "@/api/resource";
 
     import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 
     export default {
-        name: 'resourceDialogAdd',
+        name: "resourceDialogAdd",
         components: {TreeSelectLoad },
-        props: ['dialogTableTitle'],
+        props: ["dialogTableTitle"],
         data () {
             return {
                 form: {
-                    name: '',
+                    name: "",
                     parentId: null,
-                    sort: '',
-                    url: ''
+                    sort: "",
+                    url: ""
                 },
                 rules: {
                     name: [
-                        { required: true, message: '请输入名称', trigger: 'blur' },
-                        { min: 1, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                        { required: true, message: "请输入名称", trigger: "blur" },
+                        { min: 1, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
                     ],
                     sort: [
-                        { required: true, message: '请输入排序', trigger: 'change' },
-                        { min: 1, max: 3, message: '只能输入数字，默认500', trigger: 'blur' }
+                        { required: true, message: "请输入排序", trigger: "change" },
+                        { min: 1, max: 3, message: "只能输入数字，默认500", trigger: "blur" }
                     ]
                 },
                 dialogAddVisible: false,
                 isDisabled: false,
                 call: true
-            }
+            };
         },
         computed: {
             ...mapState({
@@ -63,43 +63,43 @@
         methods: {
             addBtn () {
                 // 获取数据
-                this.$store.dispatch('getTreeSelData')
+                this.$store.dispatch("getTreeSelData");
             },
             // 懒加载
             loadOptions ({ parentNode, callback }) {
-                this.$store.dispatch('getTreeSelData', parentNode.id, { parentNode, callback })
-                callback()
+                this.$store.dispatch("getTreeSelData", parentNode.id, { parentNode, callback });
+                callback();
             },
             // 接收传值
             inputHandle (val) {
-                this.form.parentId = val.id
+                this.form.parentId = val.id;
             },
             submitForm (formName) {
-                const _this = this
+                const _this = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         saveResource(qs.stringify(this.form), (isShow) => {
                             if (isShow) {
-                                this.$store.dispatch('reqLoading',true)
+                                this.$store.dispatch("reqLoading",true);
                             } else {
-                                this.$store.dispatch('reqLoading',false)
+                                this.$store.dispatch("reqLoading",false);
                             }
                         }).then((res) => {
-                            this.$refs[formName].resetFields()
-                            _this.form.parentId = null
-                            _this.form.url = ''
-                            this.dialogAddVisible = false
+                            this.$refs[formName].resetFields();
+                            _this.form.parentId = null;
+                            _this.form.url = "";
+                            this.dialogAddVisible = false;
                             _this.$message({
                                 message: res.message,
-                                type: 'success'
-                            })
+                                type: "success"
+                            });
                              this.$parent.getData();
-                        })
+                        });
                     }
-                })
+                });
             }
         }
-    }
+    };
 </script>
 
 <style lang="less" scoped>

@@ -22,19 +22,19 @@
 
 <script>
     export default {
-        name: 'resourceTable',
-        props: ['tableHeaders', 'rowData'],
+        name: "resourceTable",
+        props: ["tableHeaders", "rowData"],
         data () {
-            return {}
+            return {};
         },
         methods: {
             load (tree, treeNode, resolve) {
                 setTimeout(() => {
-                    resolve(tree.childrens)
-                }, 1000)
+                    resolve(tree.childrens);
+                }, 1000);
             }
         }
-    }
+    };
 </script>
 
 <style lang="less" scoped>

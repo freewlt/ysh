@@ -6,14 +6,14 @@
 
 <script>
 export default {
-  name: 'shadeBox',
+  name: "shadeBox",
   data () {
     return {
-    }
+    };
   },
   methods: {
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

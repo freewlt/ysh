@@ -13,13 +13,13 @@
 
 <script>
 
-    import Treeselect from '@riophae/vue-treeselect'
-    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import Treeselect from "@riophae/vue-treeselect";
+    import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
     export default {
-        name: 'treeSelectLoad',
+        name: "treeSelectLoad",
         components: {Treeselect},
-        props: ['treeSelData', 'loadOptions', 'parentId'],
+        props: ["treeSelData", "loadOptions", "parentId"],
         data: () => ({
             value: null
         }),
@@ -30,12 +30,12 @@
                     id: node.id,
                     label: node.name,
                     children: node.childrens
-                }
+                };
             },
             // 传值
             selectDepart (val) {
-                this.$emit('inputHandle', val)
+                this.$emit("inputHandle", val);
             }
         }
-    }
+    };
 </script>

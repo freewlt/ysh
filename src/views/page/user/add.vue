@@ -65,112 +65,112 @@
 </template>
 
 <script>
-import { fetchResource, asyncResource } from '@/api/resource'
+import { fetchResource, asyncResource } from "@/api/resource";
 
-import InputTip from '@/components/inputTip'
-import ResourceTable from '@/components/resource/tableLoad'
+import InputTip from "@/components/inputTip";
+import ResourceTable from "@/components/resource/tableLoad";
 import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 //import TreeSelectSingle from "@/components/treeSelect/treeSelectSingle";
 //import TreeSelectMut from "@/components/treeSelect/treeSelectMut";
 
 export default {
-  name: 'userAdd',
+  name: "userAdd",
   components: { TreeSelectLoad, ResourceTable, InputTip,
 //      TreeSelectSingle, TreeSelectMut
   },
   data () {
     return {
       form: {
-        name: '',
-        parentId:'',
-        region: '',
-        date1: '',
-        date2: '',
+        name: "",
+        parentId:"",
+        region: "",
+        date1: "",
+        date2: "",
         delivery: false,
         type: [],
-        resource: '',
-        desc: ''
+        resource: "",
+        desc: ""
       },
       rules: {
         name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { required: true, message: "请选择活动区域", trigger: "change" }
         ],
         date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          { type: "date", required: true, message: "请选择日期", trigger: "change" }
         ],
         date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+          { type: "date", required: true, message: "请选择时间", trigger: "change" }
         ],
         type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+          { type: "array", required: true, message: "请至少选择一个活动性质", trigger: "change" }
         ],
         resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
+          { required: true, message: "请选择活动资源", trigger: "change" }
         ],
         desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
+          { required: true, message: "请填写活动形式", trigger: "blur" }
         ]
       },
-      msg: '提示信息',
+      msg: "提示信息",
 
       tableHeaders: [
-        {prop: 'name', label: '姓名'},
-        {prop: 'url', label: 'url'},
-        {prop: 'createDate', label: '创建时间'}
+        {prop: "name", label: "姓名"},
+        {prop: "url", label: "url"},
+        {prop: "createDate", label: "创建时间"}
       ],
       rowData: [],
       treeSelData: []
-    }
+    };
   },
   created () {
-    this.getData()
+    this.getData();
   },
   methods: {
 
     // 获取数据
     getData () {
-        const _this = this
+        const _this = this;
         asyncResource().then((res) => {
             _this.treeSelData = res.data;
             for (let i = 0; i < _this.treeSelData.length; i++) {
-                _this.treeSelData[i].childrens = null
+                _this.treeSelData[i].childrens = null;
             }
-        })
+        });
         fetchResource().then(function (res) {
-            _this.rowData = res.data.data
+            _this.rowData = res.data.data;
             _this.treeSelData = res.data;
-        })
+        });
     },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-            console.log(this.form)
+            console.log(this.form);
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
     resetForm (formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     },
     // 接收传值
     inputHandle (val) {
         if(val.length > 0){
-            this.form.parentId = val
+            this.form.parentId = val;
         }else{
-            this.form.parentId = val.id
+            this.form.parentId = val.id;
         }
     },
     // 懒加载
     loadOptions ({ parentNode, callback }) {
         let params = {
             parentId: parentNode.id
-        }
+        };
         asyncResource(params).then((res) => {
             let childrenArray = [];
             for (let i = 0; i < res.data.length; i++) {
@@ -179,14 +179,14 @@ export default {
                 } else {
                     delete res.data[i].childrens;
                 }
-                childrenArray.push(res.data[i])
+                childrenArray.push(res.data[i]);
             }
             parentNode.childrens = childrenArray;
-            callback()
-        })
+            callback();
+        });
     },
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

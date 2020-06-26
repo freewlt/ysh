@@ -21,37 +21,37 @@
 </template>
 
 <script>
-    import qs from 'qs';
-    import { mapState } from 'vuex';
-    import {updateResource, getResource} from '@/api/resource';
+    import qs from "qs";
+    import { mapState } from "vuex";
+    import {updateResource, getResource} from "@/api/resource";
 
     import TreeSelectSingle from "@/components/treeSelect/treeSelectSingle";
 
     export default {
-        name: 'resourceDialogEdit',
+        name: "resourceDialogEdit",
         components: {TreeSelectSingle },
         data () {
             return {
                 form: {
-                    id: '',
-                    name: '',
+                    id: "",
+                    name: "",
                     parentId: null,
-                    sort: '',
-                    url: ''
+                    sort: "",
+                    url: ""
                 },
                 rules: {
                     name: [
-                        { required: true, message: '请输入名称', trigger: 'blur' },
-                        { min: 1, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+                        { required: true, message: "请输入名称", trigger: "blur" },
+                        { min: 1, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur" }
                     ],
                     sort: [
-                        { required: true, message: '请输入排序', trigger: 'change' },
-                        { min: 1, max: 3, message: '只能输入数字，默认500', trigger: 'blur' }
+                        { required: true, message: "请输入排序", trigger: "change" },
+                        { min: 1, max: 3, message: "只能输入数字，默认500", trigger: "blur" }
                     ]
                 },
-                dialogTableTitle: '',
+                dialogTableTitle: "",
                 dialogEditVisible: false
-            }
+            };
         },
         computed: {
             ...mapState({
@@ -65,49 +65,49 @@
                     for(let key in this.form){
                         this.form[key] = res.data[key];
                     }
-                    this.form.parentId = res.data.parentId
-                    if(this.form.parentId == ''){
-                        this.form.parentId = null
+                    this.form.parentId = res.data.parentId;
+                    if(this.form.parentId == ""){
+                        this.form.parentId = null;
                     }
                 }).catch((err) => {
-                    console.log(err)
-                })
+                    console.log(err);
+                });
                 // 获取数据
-                this.$store.dispatch('getTreeSelAll')
+                this.$store.dispatch("getTreeSelAll");
             },
             // 接收传值
             inputHandle (val) {
-                this.form.parentId = val.id
+                this.form.parentId = val.id;
             },
             submitForm (formName) {
-                const _this = this
+                const _this = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         updateResource(qs.stringify(this.form), (isShow) => {
                             if (isShow) {
-                                this.$store.dispatch('reqLoading',true)
+                                this.$store.dispatch("reqLoading",true);
                             } else {
-                                this.$store.dispatch('reqLoading',false)
+                                this.$store.dispatch("reqLoading",false);
                             }
                         }).then((res) => {
-                            this.$refs[formName].resetFields()
-                            _this.form.parentId = null
-                            _this.form.url = ''
-                            this.dialogEditVisible = false
+                            this.$refs[formName].resetFields();
+                            _this.form.parentId = null;
+                            _this.form.url = "";
+                            this.dialogEditVisible = false;
                             _this.$message({
                                 message: res.message,
-                                type: 'success'
-                            })
+                                type: "success"
+                            });
                             this.$parent.getData();
-                        })
+                        });
                     } else {
-                        console.log('error submit!!')
-                        return false
+                        console.log("error submit!!");
+                        return false;
                     }
-                })
+                });
             }
         }
-    }
+    };
 </script>
 
 <style lang="less" scoped>

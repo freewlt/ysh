@@ -5,7 +5,7 @@ const getters = {
   // access_token: state => {
   //   return state.user.access_token
   // }
-}
-export default getters
+};
+export default getters;
 
 
