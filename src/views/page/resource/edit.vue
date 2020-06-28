@@ -25,7 +25,7 @@
     import { mapState } from "vuex";
     import {updateResource, getResource} from "@/api/resource";
 
-    import TreeSelectSingle from "@/components/treeSelect/treeSelectSingle";
+    import TreeSelectSingle from "@/components/resource/treeSelectSingle";
 
     export default {
         name: "resourceDialogEdit",

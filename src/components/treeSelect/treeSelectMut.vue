@@ -5,7 +5,7 @@
                 :options="treeSelData"
                 :normalizer="normalizer"
                 placeholder="请选择"
-                v-model="value"
+                :value="parentId"
                 @select="selectDepart"
         />
     </div>
@@ -18,9 +18,8 @@
     export default {
         name: "treeSelectMut",
         components: {Treeselect},
-        props: ["treeSelData"],
+        props: ["treeSelData","parentId"],
         data: () => ({
-            value: null,
             arr: []
         }),
         methods: {

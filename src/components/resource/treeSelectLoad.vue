@@ -5,7 +5,7 @@
                 :normalizer="normalizer"
                 :load-options="loadOptions"
                 placeholder="请选择"
-                v-model="parentId"
+                :value="parentId"
                 @select="selectDepart"
         />
     </div>

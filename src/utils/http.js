@@ -8,8 +8,8 @@ import router from "@/router";
 import {Loading, Message} from "element-ui";
 
 
-// const locationURl = 'http://192.168.0.114:7000/api-base';
-const locationURl = "http://192.168.0.18:7000";
+const locationURl = 'http://192.168.0.213:7000/api-base';
+// const locationURl = "http://192.168.0.18:7000";
 
 const config = {
     baseURL: process.env.NODE_ENV === "production" ? process.env.BASE_API : locationURl,
