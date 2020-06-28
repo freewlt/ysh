@@ -3,8 +3,10 @@
  */
 import Vue from "vue";
 import Vuex from "vuex";
-import resource from "./modules/resource";
+
 import getters from "./getters";
+import resource from "./modules/resource";
+import permission from "./modules/permission";
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
@@ -14,6 +16,7 @@ const store = new Vuex.Store({
     },
     modules: {
         resource,
+        permission,
     },
     getters
 });

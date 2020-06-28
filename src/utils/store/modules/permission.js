@@ -1,25 +1,21 @@
-// api 
-import {fetchResource, asyncResource} from "@/api/resource";
+/**
+ * Created by Administrator on 2020/6/28.
+ */
+import { asyncResource } from "@/api/permission";
 
-// types 
 export const REQUEST_LOADING = "REQUEST_LOADING";
 export const TREE_SEL_DATA = "TREE_SEL_DATA";
 export const TREE_SEL_ALL = "TREE_SEL_ALL";
-
-
-const resource = {
+const permission = {
     state: {
-        loading: false,
         treeSelData: [],
-        treeSelAll: [],
     },
     actions: {
         reqLoading(context, params) {
             context.commit("REQUEST_LOADING", params);
         },
         // vue-selTree
-        async getTreeSelData ({commit}, id) {
-            // commit(REQUEST_LOADING,true);
+        async getTreeSel ({commit}, id) {
             try {
                 if (id) {
                     const data = await asyncResource({parentId: id});
@@ -31,12 +27,7 @@ const resource = {
             } catch (err) {
                 commit(REQUEST_LOADING, false);
             }
-        },
-        getTreeSelAll ({commit}) {
-            fetchResource().then((data) => {
-                commit(TREE_SEL_ALL, {data});
-            });
-        },
+        }
     },
     mutations: {
         [REQUEST_LOADING]: (state, params) => {
@@ -46,7 +37,6 @@ const resource = {
             const {id, data} = payload;
             const resData = data.data;
             resData.map((it) => {
-                // if (it.parentFlag){
                 if (it.childCount > 0) {
                     it.childrens = null;
                 } else {
@@ -68,12 +58,7 @@ const resource = {
                 state.treeSelData = setChild(state.treeSelData);
             }
         },
-        // tree全数据
-        [TREE_SEL_ALL]: (state, payload) => {
-            const {data} = payload;
-            state.treeSelAll = data.data;
-        }
     }
 };
 
-export default resource;
+export default permission;

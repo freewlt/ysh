@@ -12,7 +12,7 @@
                         border
                         lazy
                         :load="load"
-                        :tree-props="{children: 'childrens', hasChildren: 'parent'}">
+                        :tree-props="{children: 'childrens', hasChildren: 'parentFlag'}">
                     <template v-for="item in tableHeaders">
                         <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
                     </template>

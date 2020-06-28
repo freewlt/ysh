@@ -8,7 +8,7 @@ import router from "@/router";
 import {Loading, Message} from "element-ui";
 
 
-const locationURl = 'http://192.168.0.213:7000/api-base';
+const locationURl = "http://192.168.0.213:7000";
 // const locationURl = "http://192.168.0.18:7000";
 
 const config = {
@@ -39,7 +39,7 @@ function endLoading() {
 // request拦截器
 service.interceptors.request.use(
     config => {
-        startLoading();
+        console.log(startLoading);
         const isToken = (config.headers || {}).isToken === false;
         let token = store.getters.access_token;
         if (token && !isToken) {

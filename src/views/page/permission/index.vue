@@ -7,12 +7,12 @@
             </div>
             <div class="dataTable">
                 <el-table
-                        :data="treeSelData"
+                        :data="treeTableData"
                         row-key="id"
                         border
                         lazy
                         :load="load"
-                        :tree-props="{children: 'childrens', hasChildren: 'parent'}">
+                        :tree-props="{children: 'childrens', hasChildren: 'parentFlag'}">
                     <template v-for="item in tableHeaders">
                         <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
                     </template>
@@ -30,7 +30,7 @@
 
 <script>
     import {mapState} from "vuex";
-    import {deleteResource, asyncResource} from "@/api/resource";
+    import {deleteResource, asyncResource} from "@/api/permission";
     import {deleteList} from "@/utils/tool";
 
     export default {
@@ -41,17 +41,26 @@
                     {prop: "name", label: "名称"},
                     {prop: "url", label: "url"},
                     {prop: "createDate", label: "创建时间"}
-                ],
-                dialogEditTitle: "",
-                dialogAddTitle: ""
+                ]
             };
         },
         computed: {
             ...mapState({
-                treeSelData: (sate) => sate.resource.treeSelData,
+                treeTableData: (sate) => sate.permission.treeSelData,
             })
         },
+        created () {
+            this.getData();
+        },
         methods: {
+            // 获取table数据
+            getData () {
+                this.$store.dispatch("getTreeSel");
+            },
+            // 编辑
+            editBtn () {
+
+            },
             // 删除
             deleteBtn (index, row) {
                 deleteList(deleteResource, row.id);

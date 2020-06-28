@@ -27,10 +27,10 @@
             </div>
         </div>
         <div class="navBtn">
-            <el-menu class="el-menu-vertical-demo">
+            <el-menu class="el-menu-vertical-demo" :default-active="$route.path">
                 <template v-for="item in list">
                     <router-link :to="{path:item.url}" v-if="item.children" :key="item.name">
-                        <el-submenu :index="item.name" @click="menuClick(item.name)">
+                        <el-submenu :index="item.url" @click="menuClick(item.name)">
                             <template slot="title">
                                 <!--<img :src="item.name === selectedMenuId ? item.mediumBg : item.medium">-->
                                 <i class="icon el-icon-edit"></i>
@@ -45,7 +45,7 @@
                         </el-submenu>
                     </router-link>
                     <router-link :to="{path:item.url}" :key="item.name" v-else>
-                        <el-menu-item :index="item.name" @click="menuClick(item.name)">
+                        <el-menu-item :index="item.url" @click="menuClick(item.name)">
                             <template slot="title">
                                 <!--<img :src="item.name === selectedMenuId ? item.mediumBg : item.medium">-->
                                 <i class="icon el-icon-edit"></i>
@@ -102,7 +102,7 @@
                         "modifyDate": "2016-07-21 18:31:47",
                         "flag": true,
                         "orders": "2",
-                        "name": "角色管理",
+                        "name": "权限管理",
                         "parentId": "12029684246118400",
                         "remark": "角色管理",
                         "url": "/home/permission",
@@ -512,7 +512,6 @@
             // 面包屑导航获取
             breadNav () {
                 this.breadList = this.$route.matched;
-                console.log(this.$route,"$route");
             },
             handleCommand (c) {
                 switch (c) {

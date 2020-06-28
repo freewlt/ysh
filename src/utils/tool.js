@@ -2,7 +2,7 @@
 import {Message, MessageBox} from "element-ui";
 
 export function formdata(data) {
-    var formData = new FormData();
+    const formData = new FormData();
     Object.keys(data).forEach((key) => {
         if (data[key]) {
             formData.append(key, data[key]);
