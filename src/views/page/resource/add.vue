@@ -5,7 +5,7 @@
                 <el-input v-model="form.name" placeholder="请输入名称"></el-input>
             </el-form-item>
             <el-form-item label="上级菜单">
-                <tree-select-load v-model="form.parentId" :treeSelData="treeSelData" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
+                <tree-select-load :parentId="form.parentId" :treeSelData="treeSelData" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
             </el-form-item>
             <el-form-item label="排序" prop="sort">
                 <el-input v-model="form.sort" placeholder="请输入排序"></el-input>
