@@ -39,7 +39,7 @@ function endLoading() {
 // request拦截器
 service.interceptors.request.use(
     config => {
-        console.log(startLoading);
+        startLoading();
         const isToken = (config.headers || {}).isToken === false;
         let token = store.getters.access_token;
         if (token && !isToken) {
