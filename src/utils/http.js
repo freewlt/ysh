@@ -112,3 +112,58 @@ const put = (url, data, config = {}) => {
 export {get, post, put};
 
 export default service;
+
+
+
+// const proxyPromise = (callback, config = {}) => {
+//     const start = () => {
+//         // 开始loading
+//         if (config.loading == null) {
+//             // 当什么都不传的时候执行这个
+//             store.dispatch("contentLoading",true);
+//             return () => store.dispatch("contentLoading", false);
+//         } else if (typeof config.loading === typeof Function) {
+//             // 当loading参数是函数的时候执行这个
+//             config.loading(true);
+//             return () => config.loading(false);
+//         } else if (config.loading == "global") {
+//             // 当loading参数传global的时候调用全局loading
+//             startLoading();
+//             return () => endLoading();
+//         } else {
+//             // 以上情况都不是都话就代表没有loading
+//             return () => {};
+//         }
+//     };
+//     return new Promise((resolve, reject) => {
+//         const end = start();
+//         callback()
+//         .then(function(data) {
+//             resolve(data);
+//         })
+//         .catch(function(error) {
+//             reject(error);
+//         })
+//         .finally(function() {
+//             end();
+//         });
+//     });
+// };
+
+// function get(url, params = {}, config) {
+//     return proxyPromise(function() {
+//         return service.get(url, { params, ...config });
+//     }, config);
+// }
+
+// function post(url, data, config = {}) {
+//     return proxyPromise(function() {
+//         return service.post(url, data, config);
+//     }, config);
+// }
+
+// function put(url, data, config = {}) {
+//     return proxyPromise(function() {
+//         return service.put(url, data, config);
+//     }, config);
+// }

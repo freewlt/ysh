@@ -4,15 +4,15 @@
       <el-form-item label="活动名称" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="上级菜单懒加载" prop="name">
-        <tree-select-load :treeSelData="treeSelData" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>
-      </el-form-item>
+      <!--<el-form-item label="上级菜单懒加载" prop="name">-->
+        <!--<tree-select-load :treeSelData="treeSelData" :loadOptions="loadOptions" @inputHandle="inputHandle"></tree-select-load>-->
+      <!--</el-form-item>-->
       <!--<el-form-item label="上级菜单全加载" prop="name">-->
         <!--<tree-select-single :treeSelData="treeSelData" @inputHandle="inputHandle"></tree-select-single>-->
       <!--</el-form-item>-->
-      <!--<el-form-item label="上级菜单多选">-->
-        <!--<tree-select-mut :treeSelData="treeSelData" @inputHandle="inputHandle"></tree-select-mut>-->
-      <!--</el-form-item>-->
+      <el-form-item label="上级菜单多选">
+        <tree-select-mut :treeSelData="treeSelData" @inputHandle="inputHandle"></tree-select-mut>
+      </el-form-item>
       <el-form-item label="活动名称">
         <input-tip :msg="msg" @inputHandle="inputHandle"></input-tip>
       </el-form-item>
@@ -69,14 +69,14 @@ import { fetchResource, asyncResource } from "@/api/resource";
 
 import InputTip from "@/components/inputTip";
 import ResourceTable from "@/components/resource/tableLoad";
-import TreeSelectLoad from "@/components/resource/treeSelectLoad";
+//import TreeSelectLoad from "@/components/resource/treeSelectLoad";
 //import TreeSelectSingle from "@/components/treeSelect/treeSelectSingle";
-//import TreeSelectMut from "@/components/treeSelect/treeSelectMut";
+import TreeSelectMut from "@/components/treeSelect/treeSelectMut";
 
 export default {
   name: "userAdd",
-  components: { TreeSelectLoad, ResourceTable, InputTip,
-//      TreeSelectSingle, TreeSelectMut
+  components: { TreeSelectMut, ResourceTable, InputTip,
+//      TreeSelectSingle, TreeSelectLoad
   },
   data () {
     return {

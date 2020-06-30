@@ -69,6 +69,7 @@
                     if(this.form.parentId == ""){
                         this.form.parentId = null;
                     }
+                    // this.form.parentId = [this.form.parentId];
                 }).catch((err) => {
                     console.log(err);
                 });
