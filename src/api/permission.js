@@ -1,27 +1,31 @@
 import { get, post } from "../utils/http";
 
-const apiBase = "/api-base/permission";
-
-export function fetchResource (params = {}, showLoading = () => {}) {
-    return get(apiBase + "/tree", params, { showLoading });
+export function fetchPermission(params = {}, config = {contentLoading: true}) {
+    return get("/api-base/permission/tree", params, config);
 }
 
-export function saveResource (data, showLoading) {
-    return post(apiBase + "/save", data, { showLoading, headers: { "content-type": "application/x-www-form-urlencoded" } });
+export function savePermission(data) {
+    return post("/api-base/permission/save", data, {
+        headers: { "content-type": "application/x-www-form-urlencoded" }
+    });
 }
 
-export function getResource (id) {
-    return get(apiBase + "/get/" + id);
+export function getPermission(id, config = {contentLoading: true}) {
+    return get("/api-base/permission/get/" + id, {}, config);
 }
 
-export function updateResource (data, showLoading = () => {}) {
-    return post(apiBase + "/update", data, { showLoading });
+export function updatePermission(data) {
+    return post("/api-base/permission/update", data);
 }
 
-export function deleteResource(id) {
-    return get(apiBase + "/delete/" + id);
+export function deletePermission(id, config = {contentLoading: true}) {
+    return get("/api-base/permission/delete/" + id, {}, config);
 }
 
-export function asyncResource(params = {}, showLoading = () => {}) {
-    return get(apiBase + "/async-tree", params, { showLoading });
+export function asyncPermission(params = {}, config = {contentLoading: true}) {
+    return get("/api-base/permission/async-tree", params, config);
+}
+
+export function uploadPermission(data) {
+    return post("/api-file/file/upload", data);
 }

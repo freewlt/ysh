@@ -3,52 +3,26 @@
  */
 import { get, post } from "../utils/http";
 
-export function fetchResource (params = {}, showLoading = () => {}) {
-  return get("/api-base/resource/tree", params, { showLoading });
+export function fetchResource(params = {}, config = {contentLoading: true}) {
+    return get("/api-base/resource/tree", params, config);
 }
 
-export function saveResource (data, showLoading) {
-    return post("/api-base/resource/save", data, { showLoading, headers: { "content-type": "application/x-www-form-urlencoded" } });
+export function saveResource(data) {
+    return post("/api-base/resource/save", data);
 }
 
-export function getResource (id) {
-    return get("/api-base/resource/get/" + id);
+export function getResource(id, config = {contentLoading: true}) {
+    return get("/api-base/resource/get/" + id, {}, config);
 }
 
-export function updateResource (data, showLoading = () => {}) {
-    return post("/api-base/resource/update", data, { showLoading });
+export function updateResource(data) {
+    return post("/api-base/resource/update", data);
 }
 
-export function deleteResource(id) {
-  return get("/api-base/resource/delete/" + id);
+export function deleteResource(id, config = {contentLoading: true}) {
+    return get("/api-base/resource/delete/" + id, {}, config);
 }
 
-export function asyncResource(params = {}, showLoading = () => {}) {
-    return get("/api-base/resource/async-tree", params, { showLoading });
+export function asyncResource(params = {}, config = {contentLoading: true}) {
+    return get("/api-base/resource/async-tree", params, config);
 }
-
-
-// export function fetchResource(params = {}, loading = () => {}) {
-//     return get("/api-base/resource/tree", params, { loading });
-// }
-
-// export function saveResource(data, loading) {
-//     return post("/api-base/resource/save", data, { loading, headers: { "content-type": "application/x-www-form-urlencoded" } });
-// }
-
-// export function getResource(id) {
-//     return get("/api-base/resource/get/" + id);
-// }
-
-// export function updateResource(data, loading = () => {}) {
-//     return post("/api-base/resource/update", data, { loading });
-// }
-
-// export function deleteResource(id) {
-//     return get("/api-base/resource/delete/" + id);
-// }
-
-// export function asyncResource(params = {}) {
-//     return get("/api-base/resource/async-tree", params, { loading:false, globalLoading: true  });
-// }
-

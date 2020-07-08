@@ -73,24 +73,31 @@ img {
   border-radius: 4px;
 }
 
+
+
 /*搜索条件*/
-.searchCriteria {
+.queryCriteria {
+  position: relative;
   display: -webkit-flex; /* Safari */
   display: flex;
   flex-wrap: wrap;
   align-content: space-between;
   justify-content: space-between;
-  padding: 24px 20px;
+  padding: 28px 20px 18px;
   background: #fff;
   box-sizing: border-box;
 }
-
-.searchCriteria .nouVen {
-  display: inline-block;
-  vertical-align: middle;
-  width: auto;
-  margin-right: 5px;
+.queryCriteria:after{
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10px;
+  background: #fafafa;
 }
+
 /*主要内容*/
 .content {
   width: 100%;
@@ -100,4 +107,62 @@ img {
 }
 .content .dataTable{
   margin-top: 10px;
+}
+
+
+/* vue-treeselect */
+.vue-treeselect__control{
+  height: 32px!important;
+  line-height: 30px!important;
+}
+/*.vue-treeselect__menu-container{*/
+  /*width:240px!important;*/
+  /*overflow: auto;*/
+/*}*/
+.vue-treeselect--has-value .vue-treeselect__multi-value{
+  margin-bottom:0!important;
+  line-height: 15px!important;
+}
+.vue-treeselect__multi-value-item-container{
+  padding: 1px 2px 0 0!important;
+}
+/*.vue-treeselect__multi-value-item{*/
+  /*padding: 0!important;*/
+  /*border: none!important;*/
+/*}*/
+
+/*.vue-treeselect__multi-value-label{*/
+  /*padding-right: 2px!important;*/
+/*}*/
+/*.vue-treeselect__value-remove{*/
+  /*padding: 0!important;*/
+/*}*/
+/*.vue-treeselect--searchable.vue-treeselect--multi.vue-treeselect--has-value .vue-treeselect__input-container{*/
+  /*padding-top: 0!important;*/
+  /*height: 0!important;*/
+/*}*/
+/*.vue-treeselect__input-container .vue-treeselect__input{*/
+  /*padding: 0!important;*/
+/*}*/
+/*.vue-treeselect__limit-tip-text, .vue-treeselect__limit-tip, .vue-treeselect__value-remove, .vue-treeselect__multi-value-label{*/
+  /*margin: 0!important;*/
+  /*padding: 0!important;*/
+/*}*/
+
+/* diaglo */
+.dialogBox{
+  min-width: 1300px;
+  overflow: auto;
+}
+
+/*分页*/
+.pageBox {
+  width: 100%;
+  margin: 30px auto;
+  text-align: center;
+}
+
+/*遮罩层*/
+.v-modal{
+  position: absolute!important;
 }

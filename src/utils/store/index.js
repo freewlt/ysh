@@ -4,21 +4,13 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import getters from "./getters";
-import resource from "./modules/resource";
-import permission from "./modules/permission";
+import contentLoading from "./modules/contentLoading";
 
 Vue.use(Vuex);
 const store = new Vuex.Store({
-    state: {
-        token: null,
-        loading: false,
-    },
     modules: {
-        resource,
-        permission,
+        contentLoading,
     },
-    getters
 });
 
 export default store;

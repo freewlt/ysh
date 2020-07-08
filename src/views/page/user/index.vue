@@ -1,283 +1,432 @@
 <template>
-  <div class="user">
-    <!--搜索条件-->
-    <div class="searchCriteria">
-      <div class="left">
-        <el-input class="nouVen" placeholder="人员名称"></el-input>
-        <el-input class="nouVen" placeholder="手机号"></el-input>
-        <el-input class="nouVen" placeholder="请输入内容"></el-input>
-        <el-date-picker class="dateChose" v-model="value1" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
-        <el-button type="primary">搜索</el-button>
-      </div>
+    <div class="user">
+        <!--主要内容-->
+        <div class="content">
+            <div class="btnCondition">
+                <el-button type="primary" @click="dialogAdd">添 加</el-button>
+            </div>
+            <div class="dataTable">
+                <el-table :data="tableData" row-key="id" border>
+                    <template v-for="item in tableHeaders">
+                        <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
+                    </template>
+                    <el-table-column prop="enableStatus" label="是否可用" align="center" :formatter="enableStatusFormatter">
+                    </el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-link type="warning" class="handleBtn" @click="disableUser(scope.row)">
+                                {{scope.row.enableStatus?"禁用":"启用"}}
+                            </el-link>
+                            <el-link type="primary" class="handleBtn" @click="dialogEdit(scope.row)">编辑
+                            </el-link>
+                            <el-link type="warning" class="handleBtn" @click="resetPassword(scope.row.id)">重置密码
+                            </el-link>
+                            <el-link type="danger" class="handleBtn" @click="deleteBtn(scope.row)">删除
+                            </el-link>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <!-- 分页 -->
+            <div class="pageBox">
+                <el-pagination :current-page="query.pageNum" :total="total" @current-change="changePage"/>
+            </div>
+        </div>
+        <!-- 弹窗 -->
+        <el-dialog class="dialogBox" :title="dialogTitle" v-if="dialogVisible" :visible.sync="dialogVisible"
+                   :close-on-click-modal="false">
+            <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="demo-ruleForm"
+                     size="small">
+                <el-form-item label="登录账号" prop="username">
+                    <el-input v-model="form.username" placeholder="请输入登录账号,2-20个字符" minlength="2"
+                              maxlength="20"></el-input>
+                </el-form-item>
+                <el-form-item label="名称" prop="nickName">
+                    <el-input v-model="form.nickName" placeholder="请输入昵称,2-20个字符" minlength="2"
+                              maxlength="20"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="mobile">
+                    <el-input v-model="form.mobile" placeholder="请输入11位手机号" maxlength="11"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="form.email" placeholder="请输入邮箱,6-36个字符" maxlength="36"/>
+                </el-form-item>
+                <el-form-item label="密码" prop="password" v-show="addStatus">
+                    <el-input type="password" v-model="form.password" placeholder="请输入密码" maxlength="20"
+                              autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码" prop="checkPassword" v-show="addStatus">
+                    <el-input type="password" v-model="form.checkPassword" placeholder="请输入确认密码" maxlength="20"
+                              autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="是否启用" prop="enableStatus" style="width:100%">
+                    <el-switch v-model="form.enableStatus"></el-switch>
+                </el-form-item>
+                <el-form-item label="角色" prop="roleIds" style="width:100%">
+                    <el-checkbox-group v-model="roleIds">
+                        <el-checkbox v-for="item in roles" :label="item.id" :key="item.id">{{item.roleName}}
+                        </el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item>
+            </el-form>
+            <div class="dialog-footer" slot="footer">
+                <el-button @click="submitForm" type="primary" :loading="loading">保 存</el-button>
+            </div>
+        </el-dialog>
     </div>
-    <!--内容-->
-    <div class="content">
-      <div class="btnCondition">
-        <el-button type="primary" @click="dialogTableVisible = true">添加用户</el-button>
-      </div>
-      <!--表格-->
-      <div class="dataTable">
-        <el-table :data="rowData" stripe>
-          <template v-for="item in tableHeaders">
-            <el-table-column :prop="item.prop" :label="item.label" :key="item.prop"></el-table-column>
-          </template>
-          <el-table-column label="代理名称" class="daiLi">
-            <template slot-scope="">
-              <a class="buttonText" @click="look = true">查看详情</a>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="">
-              <i class="handleBtn el-icon-edit"></i>
-              <i class="handleBtn el-icon-share"></i>
-              <!--<el-button class="handleBtn" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
-              <!--<i class="iconfont icon-edit2" @click="handleEdit(scope.$index, scope.row)"></i>-->
-              <!--<el-button class="handleBtn" @click="handleAdd(scope.$index, scope.row)">添加</el-button>-->
-              <!--<el-button class="iconfont el-icon-close handleBtn" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>-->
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-      <div class="pageBox">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage3"
-          :page-size="100"
-          layout="prev, pager, next, jumper"
-          :total="1000">
-        </el-pagination>
-      </div>
-    </div>
-    <el-dialog title="新建" :visible.sync="dialogTableVisible">
-      <user-add></user-add>
-    </el-dialog>
-  </div>
 </template>
 
 <script>
-import {fetchResource} from "@/api/resource";
-
-import UserAdd from "./add";
+import qs from "qs";
+import {deleteRow} from "@/utils/tool";
+import {stdCodes} from "@/api/stdCode";
+import {
+    chekeUsername,
+    disableUser,
+    rePassword,
+    chekeMobile,
+    listUser,
+    getRoles,
+    saveUser,
+    getUser,
+    updateUser,
+    delUser
+} from "@/api/user";
 
 export default {
-  name: "user",
-  components: { UserAdd },
-  data () {
-    return {
-      breadList: [],
-      value: "",
-      value1: "",
-      rowData: [
-        {
-          id: "2016-05-24",
-          phone: "123465757",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          use: "可用",
-          date: "2016-05-04",
-          a: "2016-05-04",
-          b: "2016-05-04",
-          c: "2016-05-04",
-          d: "2016-05-04",
-          e: "2016-05-04",
-          f: "2016-05-04",
-          g: "2016-05-04",
-          lock: "未锁定"
+    name: "user",
+    data() {
+        const validateName = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error("请输入用户名"));
+            } else if (value.length < 2 || value.length > 20) {
+                callback(new Error("用户名要求2-20个字符"));
+            } else {
+                let params = {username: value};
+                if (!this.addStatus) {
+                    params.id = this.form.id;
+                }
+                chekeUsername(params).then((res) => {
+                    if (res.data.result != "SUCCESS") {
+                        callback(new Error("用户名校验失败！"));
+                    } else if (!res.data.data) {
+                        callback(new Error("该用户名已存在！"));
+                    } else {
+                        callback();
+                    }
+                });
+            }
+        };
+        const validPhone = (rule, value, callback) => {
+            if (!value) {
+                callback(new Error("请输入电话号码"));
+            } else if (!this.isvalidPhone(value)) {
+                callback(new Error("请输入正确的11位手机号码"));
+            } else {
+                let params = {mobile: value};
+                if (!this.addStatus) {
+                    params.id = this.form.id;
+                }
+                chekeMobile(params).then((res) => {
+                    if (res.data.result != "SUCCESS") {
+                        callback(new Error("手机号校验失败！"));
+                    } else if (!res.data.data) {
+                        callback(new Error("该手机号已存在！"));
+                    } else {
+                        callback();
+                    }
+                });
+            }
+        };
+        const validatePass = (rule, value, callback) => {
+            if (!this.addStatus) {
+                callback();
+                return;
+            }
+            if (value === "") {
+                callback(new Error("请输入密码"));
+            } else if (value.length < 3) {
+                callback(new Error("密码至少三位"));
+            } else {
+                if (this.form.checkPassword !== "") {
+                    this.$refs.form.validateField("checkPassword");
+                }
+                callback();
+            }
+        };
+        const validatePass2 = (rule, value, callback) => {
+            if (!this.addStatus) {
+                callback();
+                return;
+            }
+            if (value === "") {
+                callback(new Error("请再次输入密码"));
+            } else if (value.length < 3) {
+                callback(new Error("密码至少三位"));
+            } else if (value !== this.form.password) {
+                callback(new Error("两次输入密码不一致!"));
+            } else {
+                callback();
+            }
+        };
+        return {
+            loading: false,
+            tableHeaders: [
+                {prop: "username", label: "名称"},
+                {prop: "email", label: "登陆账号"},
+                {prop: "mobile", label: "手机号"}
+            ],
+            tableData: [],
+            dialogVisible: false,
+            dialogTitle: "",
+            addStatus: true,
+            roles: [],
+            roleIds: [],
+            total: 0,
+            query: {
+                pageNum: 1
+            },
+            stdCodeTypes: {
+                enableStatus: {
+                    name: "ENABLE_STATUS",
+                    items: {}
+                },
+            },
+            form: {
+                id: "",
+                username: "",
+                nickName: "",
+                email: "",
+                password: "",
+                checkPassword: "",
+                mobile: "",
+                enableStatus: true
+            },
+            rules: {
+                username: [
+                    {required: true, validator: validateName, trigger: "blur"}
+                ],
+                nickName: [
+                    {required: true, message: "请输入名称", trigger: "blur"},
+                    {min: 2, max: 20, message: "长度在 2 - 20 个字符", trigger: "blur"}
+                ],
+                password: [
+                    {required: true, validator: validatePass, trigger: "blur"}
+                ],
+                checkPassword: [
+                    {required: true, validator: validatePass2, trigger: "blur"}
+                ],
+                email: [
+                    {required: false, message: "请输入邮箱地址", trigger: "blur"},
+                    {type: "email", message: "请输入正确的邮箱地址", trigger: "blur"},
+                    {min: 6, max: 36, message: "长度在 3 - 36 个字符", trigger: "blur"}
+                ],
+                mobile: [
+                    {required: true, validator: validPhone, trigger: "blur"}
+                ],
+                enableStatus: [
+                    {required: true, message: "状态不能为空", trigger: "blur"}
+                ]
+            }
+        };
+    },
+    created() {
+        this.getData();
+        this.getRoles();
+        stdCodes(this.stdCodeTypes);
+    },
+    methods: {
+        changePage(pageNum) {
+            this.query.pageNum = pageNum;
+            this.getData();
         },
-        {
-          id: "2016-05-23",
-          phone: "2235465",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          use: "可用",
-          date: "2016-05-22",
-          a: "2016-05-04",
-          b: "2016-05-04",
-          c: "2016-05-04",
-          d: "2016-05-04",
-          e: "2016-05-04",
-          f: "2016-05-04",
-          g: "2016-05-04",
-          lock: "未锁定"
+        enableStatusFormatter(row) {
+            return this.stdCodeTypes.enableStatus.items[row.enableStatus];
         },
-        {
-          id: "2016",
-          phone: "4564537",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518",
-          use: "可用",
-          date: "2016-",
-          lock: "未锁定"
+        disableUser(data) {
+            this.$confirm("确定" + (data.enableStatus ? "禁用" : "启用") + "该用户吗？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                disableUser({id: data.id, enableStatus: !data.enableStatus}).then((res) => {
+                    if (res.data.result == "SUCCESS") {
+                        this.$message({
+                            message: data.enableStatus ? "禁用成功" : "启用成功",
+                            type: "success"
+                        });
+                        this.getData();
+                    }
+                });
+            });
         },
-        {
-          id: "2016-05-09",
-          phone: "15742457557",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        getData() {
+            this.tableData = [];
+            listUser(this.query).then((res) => {
+                this.tableData = res.data.data.list;
+                this.total = parseInt(res.data.data.total);
+            });
         },
-        {
-          id: "2016-05-08",
-          phone: "15780022452",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        getRoles() {
+            getRoles().then((res) => {
+                this.roles = res.data.data;
+            });
         },
-        {
-          id: "2016-05-07",
-          phone: "1888888888",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        dialogAdd() {
+            this.resetForm();
+            this.addStatus = true;
+            this.dialogTitle = "添加";
+            this.dialogVisible = true;
         },
-        {
-          id: "2016-05-06",
-          phone: "15811124244",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518 弄",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        dialogEdit(row) {
+            this.resetForm();
+            getUser(row.id).then((res) => {
+                if (res.data.result == "SUCCESS") {
+                    this.addStatus = false;
+                    this.dialogTitle = "编辑";
+                    let user = res.data.data;
+                    this.form = {
+                        id: user.id,
+                        username: user.username,
+                        nickName: user.nickName,
+                        email: user.email,
+                        mobile: user.mobile,
+                        enableStatus: user.enableStatus
+                    };
+                    this.$nextTick(() => {
+                        this.roleIds = user.roleIds;
+                        this.getRoles();
+                    });
+                    this.dialogVisible = true;
+                }
+            });
         },
-        {
-          id: "2016-05-05",
-          phone: "15811418144",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        isvalidPhone(str) {
+            const reg = /^1[3|4|5|7|8][0-9]\d{8}$/;
+            return reg.test(str);
         },
-        {
-          id: "2016-05-04",
-          phone: "15811418244",
-          accountCode: "普陀区",
-          address: "上海市普陀区金沙江路 1518",
-          use: "可用",
-          date: "2016-05-04",
-          lock: "未锁定"
+        deleteBtn(row) {
+            deleteRow("此操作将永久删除记录, 是否继续?", delUser, row.id, () => {
+                this.getData();
+            });
+        },
+        resetForm() {
+            this.roleIds = [];
+            this.form = {
+                id: "",
+                username: "",
+                nickName: "",
+                email: "",
+                password: "",
+                checkPassword: "",
+                mobile: "",
+                enableStatus: true
+            };
+        },
+        resetPassword(data) {
+            this.$confirm("此操作将 重置密码为123456, 是否继续？", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
+            }).then(() => {
+                rePassword(data).then(res => {
+                    if (res.data.result == "SUCCESS") {
+                        this.$message({
+                            message: "重置密码成功",
+                            type: "success"
+                        });
+                    }
+                }).catch(() => {
+                    this.$message({
+                        message: "重置密码失败",
+                        type: "error"
+                    });
+                });
+            });
+        },
+        submitForm() {
+            this.$refs.form.validate((valid) => {
+                if (valid) {
+                    if (this.roleIds.length === 0) {
+                        this.$message({
+                            message: "请至少选择一个角色",
+                            type: "warning"
+                        });
+                        return false;
+                    }
+                    this.form.roleIds = this.roleIds;
+                    this.loading = true;
+                    if (this.addStatus) {
+                        saveUser(qs.stringify(this.form)).then(() => {
+                            this.$message({
+                                message: "添加成功",
+                                type: "success"
+                            });
+                            this.resetForm();
+                            this.$refs["form"].resetFields();
+                            this.loading = false;
+                            this.dialogVisible = false;
+                            this.getData();
+                        }).catch(() => {
+                            this.loading = false;
+                        });
+                    } else {
+                        updateUser(qs.stringify(this.form)).then(() => {
+                            this.$message({
+                                message: "修改成功",
+                                type: "success"
+                            });
+                            this.resetForm();
+                            this.$refs["form"].resetFields();
+                            this.loading = false;
+                            this.dialogVisible = false;
+                            this.getData();
+                        }).catch(() => {
+                            this.loading = false;
+                        });
+                    }
+                } else {
+                    return false;
+                }
+            });
         }
-      ],
-      tableHeaders: [
-        {prop: "id", label: "人员名称"},
-        {prop: "platformName", label: "手机号"},
-        {prop: "accountCode", label: "角色名称"},
-        {prop: "use", label: "是否可用"},
-        {prop: "lock", label: "是否锁定"},
-        {prop: "date", label: "创建日期"},
-        {prop: "a", label: "创建日期"},
-        {prop: "b", label: "是否可用"},
-        {prop: "c", label: "是否锁定"},
-        {prop: "d", label: "创建日期"},
-        {prop: "e", label: "是否可用"},
-        {prop: "f", label: "是否锁定"},
-        {prop: "g", label: "创建日期"}
-      ],
-      operations: [
-        {
-          icon: "iconfont icon-edit2",
-          className: "blue",
-          label: "编辑",
-          width: "172px",
-          title: "编辑",
-          clickFn: (index, data) => {
-            this.$emit("openSuppliersDialog", {create: false, editData: data});
-            // this.$emit('openSuppliersDialog', {create: false, editData: data});
-            // this.$set(this.rowData[$index], 'editing', true)
-            this.$router.push("/home/index-system/member-edit");
-          }
-        }
-      ],
-      dialogTableVisible: false,
-      currentPage3: 5,
-      parentId: "",
-      treeSelData: []
-    };
-  },
-  created () {
-    var _this = this;
-    fetchResource().then(function (res) {
-      _this.treeSelData = res.data.data;
-    }).catch(function (error) {
-      console.log(error);
-    });
-
-    this.getData();
-  },
-  methods: {
-
-    // 获取数据
-    getData () {
-      const _this = this;
-      fetchResource().then((res) => {
-        _this.treeSelData = res.data;
-        for (let i = 0; i < _this.treeSelData.length; i++) {
-          _this.treeSelData[i].childrens = null;
-        }
-      }).catch((err) => {
-        console.log(err);
-      });
-    },
-    /** 转换菜单数据结构 */
-    normalizer (node) {
-      return {
-        id: node.id,
-        label: node.name,
-        children: node.childrens
-      };
-    },
-    // 懒加载
-    loadOptions ({ parentNode, callback }) {
-      let params = {
-        id: parentNode.id
-      };
-      fetchResource(params).then((res) => {
-        //        parentNode.childrens = [{
-        //          id: '141',
-        //          name: '15'
-        //        }]
-        parentNode.childrens = res.data;
-        callback();
-      }).catch((err) => {
-        console.log(err);
-      });
-    },
-
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`);
     }
-  }
 };
 </script>
 
 <style lang="less" scoped>
-  .user {
-    .content{
-      max-height: calc(100% - 128px);
-      min-height: calc(100% - 92px);
-      margin-top:10px;
-      .dataTable{
-        .handleBtn{
-          display: inline-block;
-          vertical-align: middle;
-          font-size: 18px;
+    .user {
+        min-width: 1090px;
+
+        .content {
+            height: 100%;
+
+            .handleBtn {
+                padding: 0 2px;
+
+                &:after {
+                    border: none !important;
+                }
+            }
         }
-      }
-      .pageBox{
-        width: 100%;
-        margin: 20px auto;
-        text-align: center;
-      }
     }
-  }
+
+    .dialogBox {
+        .el-form {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+
+            .el-form-item {
+                width: 50%;
+            }
+
+            .btnGroup {
+                width: 100%;
+            }
+        }
+    }
 </style>

@@ -5,27 +5,26 @@ import axios from "axios";
 import store from "@/utils/store";
 import router from "@/router";
 
-import {Loading, Message} from "element-ui";
-
-
-const locationURl = "http://192.168.0.213:7000";
-// const locationURl = "http://192.168.0.18:7000";
+import { Loading, Message } from "element-ui";
 
 const config = {
-    baseURL: process.env.NODE_ENV === "production" ? process.env.BASE_API : locationURl,
-    timeout: 60000
+    baseURL: process.env.VUE_APP_URL,
+    timeout: 20,
+    validateStatus: function(status) {
+        return status >= 200 && status < 500; // 默认的
+    },
 };
 
 const service = axios.create(config);
 
 // 跨域请求，允许保存cookie
-service.defaults.withCredentials = true;
+service.defaults.withCredentials = false;
 
 // 进度条
-let globalLoading;
+let globalShowLoading;
 
 function startLoading() {
-    globalLoading = Loading.service({
+    globalShowLoading = Loading.service({
         lock: true,
         text: "加载中…",
         background: "rgba(0, 0, 0, 0.7)"
@@ -33,21 +32,36 @@ function startLoading() {
 }
 
 function endLoading() {
-    globalLoading.close();
+    globalShowLoading.close();
 }
 
 // request拦截器
 service.interceptors.request.use(
     config => {
-        startLoading();
-        const isToken = (config.headers || {}).isToken === false;
-        let token = store.getters.access_token;
-        if (token && !isToken) {
-            config.headers["Authorization"] = "Bearer " + token;// token
+
+        if (config.contentLoading == true) {
+            store.dispatch("contentLoading", true);
+        } else if (config.globalLoading == true) {
+            startLoading();
+        } else {
+            if (config.globalLoading !== undefined) {
+                store.dispatch("contentLoading", false);
+                endLoading();
+            }
         }
+
+        if(config.timeout > 60000){
+            Message({
+                message: "请求超时",
+                type: "error"
+            });
+            endLoading();
+        }
+
         return config;
     },
     err => {
+        store.dispatch("contentLoading", false);
         return Promise.reject(err);
     }
 );
@@ -55,9 +69,16 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
     res => {
-        endLoading();
+
+        if (res.config.contentLoading == true) {
+            store.dispatch("contentLoading", false);
+        }
+        if (res.config.globalLoading == true) {
+            endLoading();
+        }
+
         if (res.status === 401) {
-            router.push({path: "/login"});
+            router.push({ path: "/login" });
         }
         let tipMessage = res.data.message + `[${res.data.errorMsg}]`;
         if (res.status !== 200 || res.data.result !== "SUCCESS") {
@@ -65,105 +86,36 @@ service.interceptors.response.use(
                 message: tipMessage,
                 type: "error"
             });
-            return Promise.reject(new Error(res.data.message));
         }
         if (res.status == 200 || res.data.result === "SUCCESS") {
             return res;
         }
+
     },
     err => {
-        endLoading();
+        Message({
+            message: err,
+            type: "error"
+        });
+        store.dispatch("contentLoading", false);
+        // endLoading();
+
         return Promise.reject(err);
     }
 );
 
-const wLoading = (callback, loading) => {
-    const showLoading = loading || (() => {
-        });
-    return new Promise((resolve, reject) => {
-        showLoading(true);
-        // startLoading()
-        callback().then(response => {
-                showLoading(false);
-                // endLoading()
-                resolve(response.data);
-            },
-            err => {
-                showLoading(false);
-                // endLoading()
-                reject(err);
-            }
-        );
-    });
-};
+function get(url, params = {}, config) {
+    return service.get(url, { params, ...config });
+}
 
-const get = (url, params = {}, {showLoading} = {showLoading: () => {}}) => {
-    return wLoading(() => service.get(url, {params, showLoading}), showLoading);
-};
+function post(url, data, config) {
+    return service.post(url, data, config);
+}
 
-const post = (url, data, config = {}) => {
-    return wLoading(() => service.post(url, data, config), config.showLoading);
-};
+function put(url, data, config) {
+    return service.put(url, data, config);
+}
 
-const put = (url, data, config = {}) => {
-    return wLoading(() => service.put(url, data, config), config.showLoading);
-};
-
-export {get, post, put};
+export { get, post, put };
 
 export default service;
-
-
-
-// const proxyPromise = (callback, config = {}) => {
-//     const start = () => {
-//         // 开始loading
-//         if (config.loading == null) {
-//             // 当什么都不传的时候执行这个
-//             store.dispatch("contentLoading",true);
-//             return () => store.dispatch("contentLoading", false);
-//         } else if (typeof config.loading === typeof Function) {
-//             // 当loading参数是函数的时候执行这个
-//             config.loading(true);
-//             return () => config.loading(false);
-//         } else if (config.loading == "global") {
-//             // 当loading参数传global的时候调用全局loading
-//             startLoading();
-//             return () => endLoading();
-//         } else {
-//             // 以上情况都不是都话就代表没有loading
-//             return () => {};
-//         }
-//     };
-//     return new Promise((resolve, reject) => {
-//         const end = start();
-//         callback()
-//         .then(function(data) {
-//             resolve(data);
-//         })
-//         .catch(function(error) {
-//             reject(error);
-//         })
-//         .finally(function() {
-//             end();
-//         });
-//     });
-// };
-
-// function get(url, params = {}, config) {
-//     return proxyPromise(function() {
-//         return service.get(url, { params, ...config });
-//     }, config);
-// }
-
-// function post(url, data, config = {}) {
-//     return proxyPromise(function() {
-//         return service.post(url, data, config);
-//     }, config);
-// }
-
-// function put(url, data, config = {}) {
-//     return proxyPromise(function() {
-//         return service.put(url, data, config);
-//     }, config);
-// }

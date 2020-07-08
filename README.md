@@ -1,4 +1,6 @@
-# ysh
+# esh-platform-adminui
+
+平台后台管理界面
 
 ## Project setup
 ```

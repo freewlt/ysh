@@ -8,7 +8,7 @@
 @import "~element-ui/packages/theme-chalk/src/index";
 
 .el-dialog{
-  width: 34%!important;
+  width: 37%!important;
   min-width:415px;
   .el-dialog__header{
     border-bottom:1px solid rgba(235, 235, 235, 1);
@@ -30,4 +30,24 @@
     border: 1px solid #ccc;
     border-radius: 4px;
   }
+}
+.el-input-number--small{
+  width: 100%;
+}
+.el-table th{
+  color: rgba(0,0,0,.85);
+  background: #fafafa;
+}
+.el-dialog__wrapper{
+  position: absolute;
+}
+
+.uploader .el-upload{
+  width: 100%!important;
+}
+.uploader .el-upload .el-input__inner{
+  text-align: left;
+}
+.uploader .el-form-item__content{
+  height:32px;
 }

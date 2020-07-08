@@ -6,17 +6,23 @@ import router from "./router";
 import store from "./utils/store";
 
 import ElementUI from "element-ui";
-// import 'element-ui/lib/theme-chalk/index.css'
 import "./assets/theme/element-variables.scss";
 
 Vue.config.productionTip = false;
 
+// 全局配置 ElementUI 属性
+ElementUI.Dialog.props.closeOnClickModal.default=false;
+
+// 分页默认
+ElementUI.Pagination.props.layout.default="prev, pager, next, jumper";
+ElementUI.Pagination.props.pageSize.default=10;
+
 Vue.use(ElementUI, {
-  size: "small"
+    size: "small",
 });
 
-new Vue({ 
-  router,
-  store,
-  render: t => t(App)
+new Vue({
+    router,
+    store,
+    render: t => t(App)
 }).$mount("#app");
